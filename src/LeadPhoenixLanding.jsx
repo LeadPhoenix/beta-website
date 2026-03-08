@@ -23,7 +23,7 @@ function EmberField({ mousePos }) {
     const canvas=canvasRef.current;if(!canvas)return;
     const ctx=canvas.getContext("2d"),dpr=2,w=canvas.offsetWidth,h=canvas.offsetHeight;
     canvas.width=w*dpr;canvas.height=h*dpr;ctx.scale(dpr,dpr);
-    if(!particlesRef.current.length){for(let i=0;i<40;i++)particlesRef.current.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.2,vy:-(0.06+Math.random()*.2),size:.6+Math.random()*2,baseOpacity:.1+Math.random()*.25,pulse:Math.random()*Math.PI*2,pulseSpeed:.006+Math.random()*.015,hue:12+Math.random()*28});}
+    if(!particlesRef.current.length){for(let i=0;i<48;i++)particlesRef.current.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.2,vy:-(0.06+Math.random()*.2),size:.6+Math.random()*2,baseOpacity:.1+Math.random()*.25,pulse:Math.random()*Math.PI*2,pulseSpeed:.006+Math.random()*.015,hue:12+Math.random()*28});}
     const draw=()=>{ctx.clearRect(0,0,w,h);const mx=mousePos.current.x,my=mousePos.current.y;
       particlesRef.current.forEach(p=>{if(mx>0&&my>0){const dx=mx-p.x,dy=my-p.y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<200){const f=(200-dist)/200*.1;p.vx+=(dx/dist)*f;p.vy+=(dy/dist)*f;}}
         p.vx*=.985;p.vy*=.985;p.vy-=.003;p.x+=p.vx;p.y+=p.vy;p.pulse+=p.pulseSpeed;
@@ -207,6 +207,13 @@ export default function LeadPhoenixLanding() {
         .cb:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(247,42,23,.25);}.cb:hover::after{left:100%;}
         .js{display:flex;gap:24px;align-items:flex-start;padding:32px 0;border-bottom:1px solid var(--bdr);transition:all .3s ease;}.js:hover{padding-left:8px;}.js:last-child{border-bottom:none;}
         @keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+        .feat-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:20px;}
+        .hero-inner{padding-top:80px;}
+        @media(max-width:768px){
+          .feat-grid{grid-template-columns:1fr !important;}
+          .hero-inner{padding-top:100px;}
+          .ci{width:100% !important;}
+        }
       `}</style>
 
       <div className="lps">
@@ -241,7 +248,7 @@ export default function LeadPhoenixLanding() {
             </div>
           </div>
 
-          <div style={{position:"relative",maxWidth:"800px",textAlign:"center",zIndex:10}}>
+          <div className="hero-inner" style={{position:"relative",maxWidth:"800px",textAlign:"center",zIndex:10}}>
 
             {/* Eyebrow — category framing, not repeating the headline */}
             <div style={{
@@ -315,7 +322,7 @@ export default function LeadPhoenixLanding() {
               </h2>
             </div>
 
-            <div style={{display:"grid",gridTemplateColumns:"repeat(2, 1fr)",gap:"20px"}}>
+            <div className="feat-grid">
               {features.map((f,i)=>(
                 <div key={i} className="fc" style={reveal(featVis,(i+1)*0.1)}
                   onMouseEnter={()=>setHovFeat(i)} onMouseLeave={()=>setHovFeat(null)}>
