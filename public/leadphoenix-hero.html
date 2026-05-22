@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeadPhoenix — Hero Preview v7</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      background: #06080d;
+      color: #fff;
+      font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    :root {
+      --bg-deep: #06080d;
+      --bg: #0a0d14;
+      --surface: #0d1119;
+      --surface-2: #11161f;
+      --surface-3: #181f2c;
+      --border: rgba(255,255,255,0.06);
+      --border-strong: rgba(255,255,255,0.10);
+      --text-1: #ffffff;
+      --text-2: rgba(255,255,255,0.72);
+      --text-3: rgba(255,255,255,0.45);
+      --text-4: rgba(255,255,255,0.22);
+      --brand-orange: #FF6C28;
+      --brand-orange-deep: #d8552a;
+      --brand-red: #F72A17;
+      --brand-yellow: #FFE57D;
+      --brand-navy: #30415A;
+      --brand-navy-2: #4E6584;
+    }
+    img { display: block; max-width: 100%; }
+
+    /* ───────────────────────── AMBIENT BG — multi-layer, wispy, frame.io-style ───────────────────────── */
+    .ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .ambient .grid {
+      position: absolute; inset: -5%;
+      background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1.2px);
+      background-size: 36px 36px;
+      mask-image: radial-gradient(ellipse 80% 70% at 60% 45%, rgba(0,0,0,0.9), rgba(0,0,0,0) 75%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 60% 45%, rgba(0,0,0,0.9), rgba(0,0,0,0) 75%);
+      will-change: transform;
+    }
+    /* Multiple subtle wispy layers instead of one big aurora */
+    .ambient .wisp {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      mix-blend-mode: screen;
+      opacity: 0.5;
+      will-change: transform;
+    }
+    .ambient .wisp.w1 {
+      top: -15%; left: -10%;
+      width: 55vw; height: 55vw; max-width: 700px; max-height: 700px;
+      background: radial-gradient(circle, rgba(255, 108, 40, 0.45) 0%, transparent 60%);
+      animation: wispDrift1 28s ease-in-out infinite alternate;
+    }
+    .ambient .wisp.w2 {
+      top: 25%; left: 5%;
+      width: 42vw; height: 42vw; max-width: 540px; max-height: 540px;
+      background: radial-gradient(circle, rgba(247, 42, 23, 0.30) 0%, transparent 60%);
+      opacity: 0.4;
+      animation: wispDrift2 34s ease-in-out infinite alternate;
+    }
+    .ambient .wisp.w3 {
+      top: 55%; left: -8%;
+      width: 38vw; height: 38vw; max-width: 480px; max-height: 480px;
+      background: radial-gradient(circle, rgba(255, 140, 60, 0.25) 0%, transparent 60%);
+      opacity: 0.35;
+      animation: wispDrift3 40s ease-in-out infinite alternate;
+    }
+    .ambient .wisp.w4 {
+      top: 5%; right: 0%;
+      width: 45vw; height: 45vw; max-width: 600px; max-height: 600px;
+      background: radial-gradient(circle, rgba(255, 229, 125, 0.10) 0%, transparent 60%);
+      opacity: 0.5;
+      animation: wispDrift4 36s ease-in-out infinite alternate;
+    }
+    @keyframes wispDrift1 {
+      0%   { transform: translate(0,0) scale(1); }
+      100% { transform: translate(-4%, 3%) scale(1.08); }
+    }
+    @keyframes wispDrift2 {
+      0%   { transform: translate(0,0) scale(1); }
+      100% { transform: translate(5%, -4%) scale(0.94); }
+    }
+    @keyframes wispDrift3 {
+      0%   { transform: translate(0,0) scale(1); }
+      100% { transform: translate(-6%, -5%) scale(1.1); }
+    }
+    @keyframes wispDrift4 {
+      0%   { transform: translate(0,0) scale(1); }
+      100% { transform: translate(4%, 4%) scale(0.92); }
+    }
+    .ambient .grain {
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.10 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+      mix-blend-mode: overlay; opacity: 0.5;
+    }
+    /* Wisp parallax wrapper — translates the whole wisp group subtly */
+    .ambient .wisp-layer {
+      position: absolute; inset: 0;
+      will-change: transform;
+    }
+    .vignette {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background:
+        radial-gradient(ellipse 110% 80% at 50% 0%, transparent 0%, transparent 60%, rgba(6,8,13,0.65) 100%),
+        radial-gradient(ellipse 80% 100% at 50% 100%, transparent 0%, transparent 55%, rgba(6,8,13,0.85) 100%);
+    }
+    .ambient .embers { position: absolute; inset: 0; }
+    .ambient .ember {
+      position: absolute; width: 2px; height: 2px;
+      background: rgba(255, 180, 120, 0.5); border-radius: 50%;
+      box-shadow: 0 0 8px rgba(255, 140, 60, 0.45);
+      animation: emberDrift linear infinite;
+    }
+    @keyframes emberDrift {
+      0%   { transform: translateY(0) translateX(0); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.6; }
+      100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+    }
+
+    /* ───────────────────────── LAYOUT ───────────────────────── */
+    .page { position: relative; z-index: 2; min-height: 100vh; }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 40px;
+      max-width: 1380px; margin: 0 auto;
+    }
+    .nav .brand { display: flex; align-items: center; }
+    .nav .brand img.nav-logo {
+      height: 30px; width: auto;
+      object-fit: contain;
+    }
+    .nav .links { display: flex; align-items: center; gap: 34px; }
+    .nav .links a {
+      color: var(--text-2); text-decoration: none;
+      font-size: 14px; font-weight: 500; letter-spacing: -0.005em;
+      transition: color .15s ease;
+    }
+    .nav .links a:hover { color: var(--text-1); }
+    .nav .login { color: var(--text-2); text-decoration: none; font-size: 14px; font-weight: 500; }
+    .nav .cta {
+      background: rgba(255,255,255,0.06); color: var(--text-1);
+      border: 1px solid var(--border-strong); padding: 7px 14px;
+      border-radius: 7px; font-size: 13px; font-weight: 500;
+      font-family: inherit; cursor: pointer; transition: all .15s ease;
+    }
+    .nav .cta:hover { background: rgba(255,255,255,0.10); }
+
+    /* ─── HERO — tighter left padding, demo bleeds right ─── */
+    .hero {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 48px 40px 96px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.2fr);
+      gap: 40px;
+      align-items: center;
+      min-height: calc(100vh - 70px);
+      position: relative;
+    }
+    .hero-text {
+      max-width: 520px;
+      opacity: 0;
+      animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--brand-orange);
+      margin-bottom: 26px; padding: 6px 12px 6px 10px;
+      background: rgba(255, 108, 40, 0.07);
+      border: 1px solid rgba(255, 108, 40, 0.18);
+      border-radius: 999px;
+    }
+    .eyebrow::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--brand-orange); box-shadow: 0 0 8px rgba(255, 108, 40, 0.8);
+    }
+    .headline {
+      font-size: clamp(38px, 4.6vw, 60px); font-weight: 600;
+      line-height: 1.05; letter-spacing: -0.022em;
+      margin: 0 0 22px; color: var(--text-1);
+    }
+    .headline .accent {
+      background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.78) 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subhead {
+      font-size: 16px; line-height: 1.6; color: var(--text-2);
+      max-width: 480px; margin: 0 0 32px; font-weight: 400;
+    }
+    .cta-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: linear-gradient(180deg, #ff7a3a 0%, #f15a1c 100%);
+      color: #fff; border: 1px solid rgba(255,255,255,0.08);
+      padding: 12px 22px; border-radius: 9px;
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 8px 24px -6px rgba(247, 42, 23, 0.5), 0 0 0 1px rgba(247, 42, 23, 0.3);
+      transition: all .15s ease;
+    }
+    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-secondary {
+      background: transparent; color: var(--text-2); border: none;
+      padding: 12px 8px; font-size: 14px; font-weight: 500;
+      font-family: inherit; cursor: pointer; transition: color .15s ease;
+    }
+    .btn-secondary:hover { color: var(--text-1); }
+    .btn-secondary .arrow { display: inline-block; margin-left: 6px; transition: transform .2s ease; }
+    .btn-secondary:hover .arrow { transform: translateX(3px); }
+    .cta-meta {
+      margin-top: 18px; font-size: 12.5px; color: var(--text-3);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cta-meta::before { content: ''; width: 14px; height: 1px; background: var(--text-4); }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── DEMO — clean frame, no browser chrome ─── */
+    .hero-demo {
+      position: relative;
+      opacity: 0;
+      animation: fadeUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+      margin-right: calc(-50vw + 50%);
+      padding-right: 24px;
+      max-width: none;
+    }
+    .demo-glow {
+      position: absolute; inset: -50px;
+      background: radial-gradient(ellipse at 50% 50%, rgba(255, 108, 40, 0.16) 0%, rgba(255, 108, 40, 0.04) 35%, transparent 60%);
+      filter: blur(40px); pointer-events: none; z-index: -1;
+    }
+    .demo {
+      position: relative;
+      background: var(--surface);
+      border-radius: 12px;
+      overflow: hidden;
+      max-width: 860px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 1px 0 rgba(255,255,255,0.05) inset,
+        0 32px 60px -16px rgba(0,0,0,0.7),
+        0 80px 140px -40px rgba(255, 108, 40, 0.16);
+    }
+    /* Subtle gradient border — pre-v13 version */
+    .demo::before {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: 12px;
+      padding: 1px;
+      background: linear-gradient(135deg,
+        rgba(255,255,255,0.18) 0%,
+        rgba(255, 108, 40, 0.25) 30%,
+        rgba(255,255,255,0.04) 55%,
+        rgba(247, 42, 23, 0.22) 100%);
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events: none;
+    }
+    .demo-stage {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      background: var(--surface);
+      overflow: hidden;
+      border-radius: 11px;
+    }
+
+    .scene {
+      position: absolute; inset: 0; opacity: 0;
+      transition: opacity 0.5s ease;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .scene.active { opacity: 1; }
+
+    /* ─── Staggered fadeUp pattern for content inside scenes ─── */
+    .stagger > * {
+      opacity: 0;
+      transform: translateY(14px);
+      transition:
+        opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .scene.active .stagger > *           { opacity: 1; transform: translateY(0); }
+    .scene.active .stagger > *:nth-child(1) { transition-delay: 0.10s; }
+    .scene.active .stagger > *:nth-child(2) { transition-delay: 0.25s; }
+    .scene.active .stagger > *:nth-child(3) { transition-delay: 0.40s; }
+    .scene.active .stagger > *:nth-child(4) { transition-delay: 0.55s; }
+
+    /* ─── Global cursor — lives at demo-stage level, drives by JS ─── */
+    .demo-cursor {
+      position: absolute;
+      top: 0; left: 0;
+      width: 18px; height: 18px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0;
+      transform: translate(420px, 240px);
+      transition:
+        transform 0.85s cubic-bezier(0.45, 0, 0.15, 1),
+        opacity 0.35s ease;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.55));
+    }
+    .demo-cursor svg { width: 18px; height: 18px; display: block; }
+    .demo-cursor.show { opacity: 1; }
+    .demo-cursor .click-ring {
+      position: absolute;
+      top: 4px; left: 4px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      border: 2px solid var(--brand-orange);
+      transform: scale(1);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .demo-cursor.clicking .click-ring {
+      animation: cursorClick 0.55s ease-out;
+    }
+    @keyframes cursorClick {
+      0%   { opacity: 0.9; transform: scale(0.5); }
+      100% { opacity: 0;   transform: scale(4); }
+    }
+
+    /* ─── SCENE 1: DASHBOARD (DARK, frame.io-feeling) ─── */
+    .scene-dashboard {
+      background:
+        radial-gradient(ellipse at 30% 0%, rgba(255, 108, 40, 0.05), transparent 60%),
+        linear-gradient(180deg, #0d111a 0%, #0a0e16 100%);
+      align-items: stretch; justify-content: flex-start;
+    }
+    .dash-side {
+      width: 140px;
+      background:
+        radial-gradient(ellipse 100% 50% at 70% -10%, rgba(255, 255, 255, 0.14), transparent 70%),
+        radial-gradient(ellipse 80% 40% at 30% 110%, rgba(168, 85, 247, 0.05), transparent 70%),
+        linear-gradient(180deg, rgba(22, 28, 40, 0.95) 0%, rgba(13, 17, 26, 0.88) 100%);
+      backdrop-filter: blur(14px);
+      border-right: 1px solid rgba(255,255,255,0.05);
+      padding: 14px 8px;
+      display: flex; flex-direction: column; gap: 1px;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        inset -1px 0 0 rgba(0,0,0,0.4);
+    }
+    .dash-side .brand-row {
+      display: flex; align-items: center; justify-content: center;
+      padding: 6px 2px 16px;
+    }
+    .dash-side .brand-row .cmd-logo {
+      height: 22px; width: auto;
+      max-width: 100%;
+      object-fit: contain;
+    }
+    .dash-side .nav-row {
+      display: flex; align-items: center; gap: 9px;
+      padding: 6px 8px;
+      font-size: 11.5px; font-weight: 500;
+      color: rgba(255,255,255,0.45);
+      border-radius: 5px;
+      letter-spacing: 0.01em;
+      transition: all .25s ease;
+    }
+    .dash-side .nav-row .ico {
+      width: 12px; height: 12px;
+      display: grid; place-items: center;
+      color: rgba(255,255,255,0.42);
+      flex-shrink: 0;
+    }
+    .dash-side .nav-row .ico svg {
+      width: 12px; height: 12px;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .dash-side .nav-row.module .ico { color: rgba(255,255,255,0.55); }
+    .dash-side .nav-row.revive-target.hover .ico { color: var(--brand-orange); }
+    .dash-side .nav-row.divider {
+      height: 1px; background: rgba(255,255,255,0.05);
+      margin: 8px 4px; padding: 0; pointer-events: none;
+    }
+    .dash-side .nav-row.module {
+      color: rgba(255,255,255,0.55); font-weight: 600;
+      font-size: 10.5px; letter-spacing: 0.08em;
+    }
+
+    .dash-side .nav-row.revive-target.hover {
+      background: linear-gradient(90deg, rgba(255,108,40,0.18), rgba(255,108,40,0.04));
+      color: #ffb892;
+      box-shadow: inset 2px 0 0 var(--brand-orange);
+    }
+
+    .dash-main {
+      flex: 1; padding: 18px 22px;
+      display: flex; flex-direction: column; gap: 12px;
+      min-width: 0;
+    }
+    .dash-header {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .dash-header .title {
+      font-size: 14px; font-weight: 600;
+      color: rgba(255,255,255,0.92);
+      letter-spacing: -0.01em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .dash-header .title .live {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #4ade80; box-shadow: 0 0 8px #4ade80;
+      animation: livePulse 2s ease-in-out infinite;
+    }
+    @keyframes livePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .dash-header .count {
+      font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500;
+    }
+    .dash-filter {
+      display: flex; gap: 6px; align-items: center;
+    }
+    .dash-filter .chip {
+      font-size: 10px; font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      padding: 3px 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 5px;
+      background: rgba(255,255,255,0.02);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .dash-filter .chip svg { width: 9px; height: 9px; opacity: 0.6; }
+    .dash-filter .search {
+      flex: 1; min-width: 0;
+      font-size: 10px; font-weight: 400;
+      color: rgba(255,255,255,0.35);
+      padding: 3px 8px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 5px;
+      background: rgba(255,255,255,0.02);
+    }
+    .dash-kanban {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(115px, 1fr));
+      gap: 7px;
+      flex: 1; min-height: 0;
+      overflow: hidden;
+    }
+    .k-col {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 9px 7px;
+      display: flex; flex-direction: column; gap: 5px;
+      min-width: 0;
+    }
+    .k-col.revive {
+      background: linear-gradient(180deg, rgba(255,108,40,0.07), rgba(255,108,40,0.01));
+      border-color: rgba(255,108,40,0.18);
+      box-shadow: 0 0 24px -8px rgba(255,108,40,0.4);
+    }
+    .k-col.sprint {
+      background: linear-gradient(180deg, rgba(168, 85, 247, 0.08), rgba(168, 85, 247, 0.01));
+      border-color: rgba(168, 85, 247, 0.22);
+      box-shadow: 0 0 24px -8px rgba(168, 85, 247, 0.4);
+    }
+    .k-col.sprint .k-head { color: #d8b4fe; }
+    .k-col.sprint .k-head .k-count {
+      color: #c084fc;
+      background: rgba(168, 85, 247, 0.12);
+    }
+    .k-col.sprint .k-card {
+      background: rgba(168, 85, 247, 0.05);
+      border-color: rgba(168, 85, 247, 0.14);
+    }
+    .k-col.sprint .k-card .bar i {
+      background: linear-gradient(90deg, #c084fc, #a855f7);
+    }
+    .k-col.apps {
+      background: linear-gradient(180deg, rgba(74, 222, 128, 0.07), rgba(74, 222, 128, 0.01));
+      border-color: rgba(74, 222, 128, 0.20);
+      box-shadow: 0 0 24px -8px rgba(74, 222, 128, 0.35);
+    }
+    .k-col.apps .k-head { color: #86efac; }
+    .k-col.apps .k-head .k-count {
+      color: #4ade80;
+      background: rgba(74, 222, 128, 0.10);
+    }
+    .k-col.apps .k-card {
+      background: rgba(74, 222, 128, 0.06);
+      border-color: rgba(74, 222, 128, 0.14);
+    }
+    .k-card.paid .commission {
+      color: #4ade80;
+      font-weight: 700;
+      font-size: 9.5px;
+      letter-spacing: 0.01em;
+    }
+    .k-col.dead {
+      opacity: 0.55;
+      background: rgba(255,255,255,0.015);
+    }
+    .k-col.dead .k-head .k-count { color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.04); }
+    .k-card.cold .name { color: rgba(255,255,255,0.55); }
+    .k-card.cold .meta .dot { background: rgba(255,255,255,0.18); }
+    .k-col .k-head {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 9.5px; font-weight: 700; letter-spacing: 0.09em;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 3px;
+    }
+    .k-col.revive .k-head { color: #ffb892; }
+    .k-col.stale .k-head .k-count { color: var(--brand-red); }
+    .k-col .k-head .k-count {
+      background: rgba(255,255,255,0.06);
+      padding: 1px 7px; border-radius: 6px;
+      color: var(--brand-orange); font-weight: 700; letter-spacing: 0;
+    }
+    .k-card {
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 6px;
+      padding: 7px 8px;
+      font-size: 9px;
+      color: rgba(255,255,255,0.88);
+      display: flex; flex-direction: column; gap: 4px;
+      transition: all .3s ease;
+    }
+    .k-col.revive .k-card {
+      background: rgba(255,108,40,0.05);
+      border-color: rgba(255,108,40,0.12);
+    }
+    .k-card .row {
+      display: flex; align-items: center; gap: 5px;
+    }
+    .k-card .avatar {
+      width: 14px; height: 14px; border-radius: 50%;
+      background: linear-gradient(135deg, #4a5c78, #2a3a52);
+      flex-shrink: 0;
+      display: grid; place-items: center;
+      font-size: 7px; font-weight: 700;
+      color: rgba(255,255,255,0.7);
+    }
+    .k-card .name {
+      font-weight: 600; flex: 1; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .k-card .meta {
+      color: rgba(255,255,255,0.4); font-size: 8px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .k-card .meta .dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+    }
+    .k-card.hot .meta .dot { background: var(--brand-orange); box-shadow: 0 0 4px var(--brand-orange); }
+    .k-card .bar {
+      height: 2px; background: rgba(255,255,255,0.08);
+      border-radius: 2px; overflow: hidden; margin-top: 2px;
+    }
+    .k-card .bar i {
+      display: block; height: 100%;
+      background: linear-gradient(90deg, var(--brand-orange), var(--brand-red));
+      border-radius: 2px;
+    }
+
+
+    /* App-open animation — REVIVE opens FROM the REVIVE sidebar item position */
+    .scene-login.opening {
+      animation: appOpen 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+      animation-fill-mode: both;
+      transform-origin: 9% 47%;
+    }
+    @keyframes appOpen {
+      0%   { transform: scale(0.15); opacity: 0; }
+      60%  { opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    /* App-close animation — success shrinks toward Dashboard sidebar item */
+    .scene-revive-success.closing {
+      animation: appClose 0.6s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+      transform-origin: 9% 13%;
+      z-index: 5;
+    }
+    @keyframes appClose {
+      0%   { transform: scale(1); opacity: 1; }
+      40%  { opacity: 1; }
+      100% { transform: scale(0.12); opacity: 0; }
+    }
+
+    /* ─── SCENE: LOGIN (ORANGE) — uses Medium.png (white logo) ─── */
+    .scene-login {
+      background:
+        radial-gradient(ellipse at 50% 35%, rgba(255,255,255,0.14), transparent 60%),
+        linear-gradient(135deg, #d8552a 0%, #ee6a30 50%, #ff7a3a 100%);
+      flex-direction: column; gap: 38px;
+    }
+    .scene-login .lp-logo {
+      width: auto; height: 180px;
+      max-width: 70%;
+      object-fit: contain;
+    }
+    .scene-login .login-btn {
+      background: #fff; color: #c84a20; border: none;
+      padding: 11px 64px; border-radius: 7px;
+      font-size: 14px; font-weight: 500; font-family: inherit;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.15);
+    }
+
+    /* ─── SCENE: REVIVE EMPTY (WHITE/GRAY) — uses Large-Dark Blue.png ─── */
+    .scene-revive-empty {
+      background: radial-gradient(ellipse at 50% 30%, #ffffff 0%, #f0f0f0 100%);
+      flex-direction: column; gap: 28px;
+    }
+    .scene-revive-empty .lp-logo {
+      width: auto; height: 180px;
+      max-width: 65%;
+      object-fit: contain;
+    }
+    .scene-revive-empty .tagline {
+      color: var(--brand-navy); font-size: 16px; font-weight: 400;
+    }
+    .upload-btn {
+      background: #fff; color: var(--brand-navy);
+      border: 1px solid #dde2eb;
+      padding: 11px 28px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; font-family: inherit;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: all .25s ease; position: relative;
+    }
+    .upload-btn.click-pulse::after {
+      content: ''; position: absolute; inset: -6px;
+      border-radius: 12px; border: 2px solid var(--brand-orange);
+      animation: clickPulse 0.7s ease-out; pointer-events: none;
+    }
+    @keyframes clickPulse {
+      0% { opacity: 0.8; transform: scale(0.92); }
+      100% { opacity: 0; transform: scale(1.15); }
+    }
+
+    /* ─── SCENE: REVIVE PROGRESS ─── */
+    .scene-revive-progress {
+      background: radial-gradient(ellipse at 50% 30%, #ffffff 0%, #f0f0f0 100%);
+      flex-direction: column; gap: 28px;
+      overflow: hidden;
+    }
+    .scene-revive-progress .heat {
+      position: absolute; inset: auto 0 0 0; height: 45%;
+      background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(255, 108, 40, 0.0) 25%,
+        rgba(255, 108, 40, 0.10) 55%,
+        rgba(255, 108, 40, 0.32) 100%);
+      transform: translateY(40%);
+      transition: transform 2.5s cubic-bezier(0.4, 0, 0.6, 1);
+      pointer-events: none;
+    }
+    .scene-revive-progress.active .heat { transform: translateY(0); }
+    .scene-revive-progress .lp-logo {
+      width: auto; height: 180px;
+      max-width: 65%;
+      object-fit: contain;
+      position: relative; z-index: 2;
+    }
+    .scene-revive-progress .track {
+      width: 260px; height: 3px;
+      background: rgba(48,65,90,0.13);
+      border-radius: 4px; overflow: hidden;
+      position: relative; z-index: 2;
+    }
+    .scene-revive-progress .fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--brand-orange), var(--brand-red));
+      border-radius: 4px;
+      transition: width 2.5s cubic-bezier(0.4, 0, 0.6, 1);
+      box-shadow: 0 0 12px rgba(255, 108, 40, 0.6);
+    }
+    .scene-revive-progress.active .fill { width: 100%; }
+
+    /* ─── SCENE: REVIVE SUCCESS ─── */
+    .scene-revive-success {
+      background: radial-gradient(ellipse at 50% 30%, #ffffff 0%, #f0f0f0 100%);
+      flex-direction: column; gap: 22px;
+    }
+    .scene-revive-success .lp-logo {
+      width: auto; height: 180px;
+      max-width: 65%;
+      object-fit: contain;
+    }
+    .scene-revive-success .result {
+      color: var(--brand-navy); font-size: 20px; font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .scene-revive-success .result .num {
+      background: linear-gradient(135deg, var(--brand-orange), var(--brand-red));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800; letter-spacing: -0.02em;
+    }
+    .scene-revive-success .cta-line {
+      font-size: 13px; color: #6f7889;
+    }
+
+    /* ─── RESULTS DASHBOARD SCENE ─── */
+    .scene-results {
+      background:
+        radial-gradient(ellipse at 30% 0%, rgba(74, 222, 128, 0.05), transparent 60%),
+        linear-gradient(180deg, #0d111a 0%, #0a0e16 100%);
+      align-items: stretch; justify-content: flex-start;
+    }
+    /* Highlight Dashboard nav item in results scene */
+    .scene-results .dashboard-target {
+      background: linear-gradient(90deg, rgba(74, 222, 128, 0.16), rgba(74, 222, 128, 0.02));
+      color: #86efac !important;
+      box-shadow: inset 2px 0 0 #4ade80;
+    }
+    .scene-results .dashboard-target .ico {
+      color: #4ade80 !important;
+    }
+    .results-main {
+      padding: 22px 24px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      flex: 1; min-height: 0;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,108,40,0.04), transparent 50%);
+      pointer-events: none;
+    }
+    .stat-card .label {
+      font-size: 22px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.78);
+      text-transform: none;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      position: relative;
+    }
+    .stat-card .value {
+      font-size: 42px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.022em;
+      line-height: 1;
+      position: relative;
+    }
+    .stat-card { gap: 10px; padding: 18px 20px; }
+    .stat-card.green {
+      background:
+        linear-gradient(180deg, rgba(74, 222, 128, 0.10), rgba(74, 222, 128, 0.02));
+      border-color: rgba(74, 222, 128, 0.22);
+      box-shadow: 0 0 28px -10px rgba(74, 222, 128, 0.4);
+    }
+    .stat-card.green::before { display: none; }
+    .stat-card.green .label { color: #86efac; }
+    .stat-card.green .value {
+      background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Preview note */
+    .preview-note {
+      max-width: 760px; margin: 40px auto 80px;
+      padding: 18px 26px; background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border); border-radius: 10px;
+      color: var(--text-3); font-size: 12.5px; line-height: 1.65;
+    }
+    .preview-note strong { color: var(--text-1); font-weight: 600; }
+
+    @media (max-width: 980px) {
+      .hero {
+        grid-template-columns: 1fr; gap: 56px;
+        padding: 40px 24px 80px;
+        min-height: auto; text-align: center;
+      }
+      .hero-text { margin: 0 auto; }
+      .eyebrow { margin-left: auto; margin-right: auto; }
+      .cta-row { justify-content: center; }
+      .cta-meta { justify-content: center; }
+      .cta-meta::before { display: none; }
+      .hero-demo { margin-right: 0; padding-right: 0; }
+      .demo { max-width: 100%; }
+      .nav { padding: 20px 24px; }
+      .nav .links { gap: 18px; }
+      .nav .links .hide-sm { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient" id="ambient">
+    <div class="grid" id="grid"></div>
+    <div class="wisp-layer" id="wispLayer">
+      <div class="wisp w1"></div>
+      <div class="wisp w2"></div>
+      <div class="wisp w3"></div>
+      <div class="wisp w4"></div>
+    </div>
+    <div class="embers" id="embers"></div>
+    <div class="grain"></div>
+  </div>
+  <div class="vignette"></div>
+
+  <div class="page">
+
+    <nav class="nav">
+      <div class="brand">
+        <img class="nav-logo" src="./Large-Transparent.png" alt="LeadPhoenix" />
+      </div>
+      <div class="links">
+        <a href="#" class="hide-sm">Product</a>
+        <a href="#" class="hide-sm">For Producers</a>
+        <a href="#" class="login">Log in</a>
+        <button class="cta">Get Access</button>
+      </div>
+    </nav>
+
+    <main class="hero">
+      <div class="hero-text">
+        <div class="eyebrow">For the Modern Life Insurance Professional</div>
+        <h1 class="headline">
+          <span class="accent">Write more business<br>in less time</span><br>
+          from the leads you<br>already own.
+        </h1>
+        <p class="subhead">
+          LeadPhoenix is the Operating System that keeps your entire book moving,
+          from brand new prospects to years-old contacts. Stop fighting your own systems,
+          stop buying extra leads, and pull more commission from the data you already have.
+        </p>
+        <div class="cta-row">
+          <button class="btn-primary">Get Access</button>
+          <button class="btn-secondary">See how it works <span class="arrow">→</span></button>
+        </div>
+        <div class="cta-meta">Limited availability · Built for serious producers</div>
+      </div>
+
+      <div class="hero-demo">
+        <div class="demo-glow"></div>
+        <div class="demo" id="demo">
+          <div class="demo-stage" id="stage">
+            <div class="demo-cursor" id="cursor">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 3 L5 21 L10 16 L13 22 L16 21 L13 14 L20 13 Z"
+                      fill="#fff" stroke="#0a0e16" stroke-width="1.2" stroke-linejoin="round"/>
+              </svg>
+              <span class="click-ring"></span>
+            </div>
+
+            <!-- SCENE 1: DASHBOARD (the OS — establishes context) -->
+            <div class="scene scene-dashboard" data-scene="dashboard" id="dashScene">
+              <div class="dash-side">
+                <div class="brand-row"><img class="cmd-logo" src="./LP%20Command%20Orange%20White.png" alt="LeadPhoenix Command" /></div>
+                <div class="nav-row"><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span> Dashboard</div>
+                <div class="nav-row"><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span> Calendar</div>
+                <div class="nav-row"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 13l2-8h14l2 8v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6z"/><path d="M3 13h5l1 2h6l1-2h5"/></svg></span> Inbox</div>
+                <div class="nav-row"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span> Leads</div>
+                <div class="nav-row"><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="7" rx="1"/></svg></span> Pipeline</div>
+                <div class="nav-row divider"></div>
+                <div class="nav-row module"><span class="ico"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></span> SPRINT</div>
+                <div class="nav-row module revive-target" id="reviveItem"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></span> REVIVE</div>
+                <div class="nav-row module"><span class="ico"><svg viewBox="0 0 24 24"><path d="M14 3l7 7-4 4-7-7z"/><path d="M10 7l-7 7 4 4 7-7"/></svg></span> FORGE</div>
+              </div>
+              <div class="dash-main">
+                <div class="dash-header">
+                  <span class="title"><span class="live"></span>Pipeline</span>
+                  <span class="count">1,091 active</span>
+                </div>
+                <div class="dash-filter">
+                  <span class="chip">All ▾</span>
+                  <span class="chip">Status ▾</span>
+                  <span class="search">Search leads…</span>
+                </div>
+                <div class="dash-kanban">
+                  <div class="k-col sprint">
+                    <div class="k-head"><span>SPRINT</span><span class="k-count">22</span></div>
+                    <div class="k-card hot"><div class="row"><div class="avatar">IH</div><div class="name">Indri Halstad</div></div><div class="meta"><span class="dot"></span>Term Life · $480K</div><div class="bar"><i style="width: 78%"></i></div></div>
+                    <div class="k-card"><div class="row"><div class="avatar">SW</div><div class="name">Steve Ward</div></div><div class="meta"><span class="dot"></span>IUL Review</div><div class="bar"><i style="width: 42%"></i></div></div>
+                    <div class="k-card hot"><div class="row"><div class="avatar">KH</div><div class="name">Kerry Henry</div></div><div class="meta"><span class="dot"></span>Mortgage Prot.</div><div class="bar"><i style="width: 65%"></i></div></div>
+                  </div>
+                  <div class="k-col revive">
+                    <div class="k-head"><span>REVIVE</span><span class="k-count">169</span></div>
+                    <div class="k-card"><div class="row"><div class="avatar">CN</div><div class="name">Carla Newman</div></div><div class="meta"><span class="dot"></span>Final Expense</div><div class="bar"><i style="width: 88%"></i></div></div>
+                    <div class="k-card hot"><div class="row"><div class="avatar">SM</div><div class="name">Sherika M.</div></div><div class="meta"><span class="dot"></span>Term Life</div><div class="bar"><i style="width: 72%"></i></div></div>
+                    <div class="k-card"><div class="row"><div class="avatar">PT</div><div class="name">Palmer Turner</div></div><div class="meta"><span class="dot"></span>Mortgage Prot.</div><div class="bar"><i style="width: 58%"></i></div></div>
+                  </div>
+                  <div class="k-col stale">
+                    <div class="k-head"><span>STALE</span><span class="k-count">875</span></div>
+                    <div class="k-card"><div class="row"><div class="avatar">AR</div><div class="name">Ariele R.</div></div><div class="meta"><span class="dot"></span>Mortgage Prot.</div><div class="bar"><i style="width: 14%"></i></div></div>
+                    <div class="k-card"><div class="row"><div class="avatar">GL</div><div class="name">Garrett L.</div></div><div class="meta"><span class="dot"></span>Term Life</div><div class="bar"><i style="width: 9%"></i></div></div>
+                    <div class="k-card"><div class="row"><div class="avatar">JA</div><div class="name">Jose Alvarez</div></div><div class="meta"><span class="dot"></span>IUL</div><div class="bar"><i style="width: 22%"></i></div></div>
+                  </div>
+                  <div class="k-col apps">
+                    <div class="k-head"><span>APPS TAKEN</span><span class="k-count">487</span></div>
+                    <div class="k-card paid"><div class="row"><div class="avatar">LC</div><div class="name">Lisa Carter</div></div><div class="meta"><span class="commission">$3,847.50</span></div></div>
+                    <div class="k-card paid"><div class="row"><div class="avatar">MT</div><div class="name">Mike Thompson</div></div><div class="meta"><span class="commission">$1,247.89</span></div></div>
+                    <div class="k-card paid"><div class="row"><div class="avatar">SW</div><div class="name">Sarah Wong</div></div><div class="meta"><span class="commission">$5,420.30</span></div></div>
+                  </div>
+                  <div class="k-col dead">
+                    <div class="k-head"><span>DEAD</span><span class="k-count">412</span></div>
+                    <div class="k-card cold"><div class="row"><div class="avatar">RM</div><div class="name">Ron Massey</div></div><div class="meta"><span class="dot"></span>Mortgage Prot.</div></div>
+                    <div class="k-card cold"><div class="row"><div class="avatar">DV</div><div class="name">Diane V.</div></div><div class="meta"><span class="dot"></span>Final Expense</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SCENE 2: LOGIN (ORANGE — uses Medium.png white logo) -->
+            <div class="scene scene-login" data-scene="login">
+              <div class="stagger" style="display: flex; flex-direction: column; align-items: center; gap: 38px;">
+                <img class="lp-logo" src="./Medium.png" alt="LeadPhoenix REVIVE" />
+                <button class="login-btn">Log in</button>
+              </div>
+            </div>
+
+            <!-- SCENE 3: REVIVE EMPTY (WHITE — uses Large-Dark Blue.png navy logo) -->
+            <div class="scene scene-revive-empty" data-scene="revive-empty">
+              <div class="stagger" style="display: flex; flex-direction: column; align-items: center; gap: 28px;">
+                <img class="lp-logo" src="./Large-Dark%20Blue.png" alt="LeadPhoenix REVIVE" />
+                <div class="tagline">Feed me your leads.</div>
+                <button class="upload-btn" id="uploadBtn">Upload from Computer</button>
+              </div>
+            </div>
+
+            <!-- SCENE 4: REVIVE PROGRESS -->
+            <div class="scene scene-revive-progress" data-scene="revive-progress">
+              <div class="heat"></div>
+              <div class="stagger" style="display: flex; flex-direction: column; align-items: center; gap: 28px;">
+                <img class="lp-logo" src="./Large-Dark%20Blue.png" alt="LeadPhoenix REVIVE" />
+                <div class="track"><div class="fill"></div></div>
+              </div>
+            </div>
+
+            <!-- SCENE 5: REVIVE SUCCESS -->
+            <div class="scene scene-revive-success" data-scene="revive-success">
+              <div class="stagger" style="display: flex; flex-direction: column; align-items: center; gap: 22px;">
+                <img class="lp-logo" src="./Large-Dark%20Blue.png" alt="LeadPhoenix REVIVE" />
+                <div class="result">All set. <span class="num">475</span> leads processed.</div>
+                <div class="cta-line">Go make some sales!</div>
+              </div>
+            </div>
+
+            <!-- SCENE 6: RESULTS DASHBOARD (back in Command, with stats) -->
+            <div class="scene scene-results" data-scene="results">
+              <div class="dash-side">
+                <div class="brand-row"><img class="cmd-logo" src="./LP%20Command%20Orange%20White.png" alt="LeadPhoenix Command" /></div>
+                <div class="nav-row dashboard-target"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span> Dashboard</div>
+                <div class="nav-row"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span> Calendar</div>
+                <div class="nav-row"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-8h14l2 8v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6z"/><path d="M3 13h5l1 2h6l1-2h5"/></svg></span> Inbox</div>
+                <div class="nav-row"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span> Leads</div>
+                <div class="nav-row"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="7" rx="1"/></svg></span> Pipeline</div>
+                <div class="nav-row divider"></div>
+                <div class="nav-row module"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></span> SPRINT</div>
+                <div class="nav-row module"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></span> REVIVE</div>
+                <div class="nav-row module"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3l7 7-4 4-7-7z"/><path d="M10 7l-7 7 4 4 7-7"/></svg></span> FORGE</div>
+              </div>
+              <div class="dash-main results-main">
+                <div class="dash-header">
+                  <span class="title"><span class="live"></span>Today's Performance</span>
+                  <span class="count">After REVIVE</span>
+                </div>
+                <div class="stats-grid">
+                  <div class="stat-card">
+                    <span class="label">Leads Revived</span>
+                    <span class="value" data-target="475">0</span>
+                  </div>
+                  <div class="stat-card">
+                    <span class="label">Appointments Booked</span>
+                    <span class="value" data-target="40">0</span>
+                  </div>
+                  <div class="stat-card">
+                    <span class="label">Apps Taken</span>
+                    <span class="value" data-target="24">0</span>
+                  </div>
+                  <div class="stat-card green">
+                    <span class="label">Commission Earned</span>
+                    <span class="value" data-target="12000" data-prefix="$">$0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="preview-note">
+      <strong>v7:</strong> Source Sans 3, real REVIVE logos (white on orange, navy on gray), no browser chrome (clean gradient border instead), scenes reordered so the OS dashboard comes first then REVIVE flow (orange → white → progress → success). Background is now 4 separate wispy gradient layers drifting independently — more "all-encompassing" than one big aurora. Parallax is background-only, very subtle. Staggered fadeUp transitions on each scene's content. ~12s loop.
+    </div>
+
+  </div>
+
+  <script>
+    // Inject just the small V mark for the dashboard sidebar (kept as base64 — tiny)
+    const LP_MARK = "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";
+    document.documentElement.style.setProperty('--lp-mark', `url("data:image/png;base64,${LP_MARK}")`);
+
+    // ─── Embers (28) ───
+    const embers = document.getElementById('embers');
+    for (let i = 0; i < 28; i++) {
+      const e = document.createElement('div');
+      e.className = 'ember';
+      const dur = 16 + Math.random() * 24;
+      e.style.left = Math.random() * 100 + '%';
+      e.style.bottom = '-2px';
+      const size = 1.2 + Math.random() * 2.2;
+      e.style.width = size + 'px';
+      e.style.height = size + 'px';
+      e.style.animationDuration = dur + 's';
+      e.style.animationDelay = (-Math.random() * dur) + 's';
+      e.style.opacity = 0.4 + Math.random() * 0.4;
+      embers.appendChild(e);
+    }
+
+    // ─── Mouse parallax (background ONLY, very subtle, frame.io-style) ───
+    const grid = document.getElementById('grid');
+    const wispLayer = document.getElementById('wispLayer');
+
+    let targetX = 0.5, targetY = 0.5;
+    let curX = 0.5, curY = 0.5;
+
+    window.addEventListener('mousemove', (e) => {
+      targetX = e.clientX / window.innerWidth;
+      targetY = e.clientY / window.innerHeight;
+    });
+
+    function parallaxTick() {
+      curX += (targetX - curX) * 0.06;
+      curY += (targetY - curY) * 0.06;
+      const dx = curX - 0.5;
+      const dy = curY - 0.5;
+
+      // Grid: ~20px shift max — barely noticeable, atmospheric
+      grid.style.transform = `translate3d(${dx * -20}px, ${dy * -20}px, 0)`;
+
+      // Wisp group: ~35px shift max — subtle drift opposite to cursor
+      wispLayer.style.transform = `translate3d(${dx * 35}px, ${dy * 35}px, 0)`;
+
+      requestAnimationFrame(parallaxTick);
+    }
+    requestAnimationFrame(parallaxTick);
+
+    // ─── Scene timeline — DASHBOARD → REVIVE hover → ORANGE login → WHITE empty → upload → PROGRESS → SUCCESS ───
+    const stage = document.getElementById('stage');
+    const scenes = Array.from(stage.querySelectorAll('.scene'));
+    const reviveItem = document.getElementById('reviveItem');
+    const uploadBtn = document.getElementById('uploadBtn');
+
+    const timeline = [
+      // 1. Command dashboard — cursor appears, clicks REVIVE
+      { scene: 'dashboard',       hold: 700,  cursorTo: 'rest' },
+      { scene: 'dashboard',       hold: 1100, cursorTo: 'revive', cursorShow: true, noSwap: true },
+      { scene: 'dashboard',       hold: 500,  reviveHover: true, cursorClick: true, noSwap: true },
+      // 2. REVIVE OPENS (app-open animation from REVIVE sidebar position)
+      { scene: 'login',           hold: 1100, cursorTo: 'login-btn', openAnim: true },
+      { scene: 'login',           hold: 500,  cursorClick: true, noSwap: true },
+      // 3. Feed me your leads
+      { scene: 'revive-empty',    hold: 1100, cursorTo: 'upload-btn' },
+      { scene: 'revive-empty',    hold: 700,  cursorClick: true, uploadPulse: true, noSwap: true },
+      // 4. Progress — cursor stays visible but idle near upload spot
+      { scene: 'revive-progress', hold: 2800 },
+      // 5. Success — cursor still idle
+      { scene: 'revive-success',  hold: 1300 },
+      // 6. CLOSE TRANSITION — cursor glides up to Dashboard as REVIVE closes
+      { scene: 'revive-success',  hold: 650, cursorTo: 'dashboard-row', closeAnim: true, noSwap: true },
+      // 7. Results dashboard appears, cursor clicks Dashboard, counters animate
+      { scene: 'results',         hold: 350, cursorClick: true },
+      { scene: 'results',         hold: 2800, runCounters: true, cursorHide: true, noSwap: true },
+    ];
+
+    function activate(name) {
+      scenes.forEach(s => s.classList.toggle('active', s.dataset.scene === name));
+    }
+
+    // Cursor + counters
+    const cursor = document.getElementById('cursor');
+
+    // Cursor positions as percentages of the demo stage
+    const cursorTargets = {
+      'rest':           { x: 70, y: 70 },
+      'revive':         { x: 9,  y: 47 },
+      'login-btn':      { x: 50, y: 71 },
+      'upload-btn':     { x: 50, y: 75 },
+      'dashboard-row':  { x: 9,  y: 13 },
+    };
+
+    function moveCursorTo(targetName) {
+      if (!cursor) return;
+      const t = cursorTargets[targetName];
+      if (!t) return;
+      const stage = document.getElementById('stage');
+      const rect = stage.getBoundingClientRect();
+      const x = (t.x / 100) * rect.width;
+      const y = (t.y / 100) * rect.height;
+      cursor.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    // Counter animation for results dashboard
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.target || '0');
+      const prefix = el.dataset.prefix || '';
+      const duration = 1500;
+      const start = performance.now();
+      function tick(now) {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const val = Math.round(eased * target);
+        el.textContent = prefix + val.toLocaleString();
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+    function runCounters() {
+      document.querySelectorAll('.scene-results .stat-card .value').forEach(el => {
+        el.textContent = (el.dataset.prefix || '') + '0';
+        animateCounter(el);
+      });
+    }
+
+    async function runLoop() {
+      moveCursorTo('rest');
+
+      while (true) {
+        for (const step of timeline) {
+          if (!step.noSwap) activate(step.scene);
+          if (reviveItem) reviveItem.classList.toggle('hover', !!step.reviveHover);
+
+          // App open/close transition animations
+          if (step.openAnim) {
+            const loginEl = document.querySelector('[data-scene="login"]');
+            if (loginEl) {
+              loginEl.classList.add('opening');
+              setTimeout(() => loginEl.classList.remove('opening'), 700);
+            }
+          }
+          if (step.closeAnim) {
+            const successEl = document.querySelector('[data-scene="revive-success"]');
+            if (successEl) {
+              successEl.classList.add('closing');
+              setTimeout(() => successEl.classList.remove('closing'), 650);
+            }
+          }
+
+          // Cursor
+          if (cursor) {
+            if (step.cursorTo)   moveCursorTo(step.cursorTo);
+            if (step.cursorShow) cursor.classList.add('show');
+            if (step.cursorHide) cursor.classList.remove('show');
+            if (step.cursorClick) {
+              cursor.classList.add('clicking');
+              setTimeout(() => cursor.classList.remove('clicking'), 600);
+            }
+          }
+
+          if (uploadBtn && step.uploadPulse) {
+            uploadBtn.classList.add('click-pulse');
+            setTimeout(() => uploadBtn.classList.remove('click-pulse'), 700);
+          }
+
+          if (step.runCounters) runCounters();
+
+          await new Promise(r => setTimeout(r, step.hold));
+        }
+        await new Promise(r => setTimeout(r, 400));
+      }
+    }
+    runLoop();
+  </script>
+
+</body>
+</html>
