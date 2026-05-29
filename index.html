@@ -29,12 +29,7 @@
       -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
     }
-    /* iOS Safari auto-inflates body text inside scaled/zoomed containers
-       for "readability". That inflated text overflows the mockups (lead
-       card text, COMMAND inbox conversation, etc.) on iPhones. 100% locks
-       the rendered text size to the CSS-defined size, no auto-scaling. */
-    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-    body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    html { scroll-behavior: smooth; }
     :root {
       --bg-deep: #06080d;
       --bg: #0a0d14;
@@ -4419,17 +4414,11 @@
         .glass-frame { transform: none !important; }
         .lp-launch-image-wrap { transform: none !important; }
 
-        /* SPRINT — scale phone-in-glass-frame down. Internal SMS bubbles
-           stay proportional. Flex on .module-visual centers the phone
-           horizontally regardless of how Safari interprets the zoom box. */
-        .lp-block-sprint .module-visual {
-          display: flex !important;
-          flex-direction: column !important;
-          align-items: center !important;
-        }
+        /* SPRINT — scale the entire phone-in-glass-frame down. Internal
+           SMS bubbles stay in proportion. */
         .lp-block-sprint .glass-frame {
           zoom: 0.62 !important;
-          max-width: 100% !important;
+          max-width: none !important;
           margin: 0 auto !important;
         }
 
@@ -4449,7 +4438,7 @@
         }
         .lp-block-revive .glass-frame {
           zoom: 0.56 !important;
-          max-width: 100% !important;
+          max-width: none !important;
           margin: 0 auto !important;
         }
         .lp-block-revive .mockup-mms {
@@ -4463,7 +4452,7 @@
            the pull-in animation is preserved on mobile. */
         .lp-block-mms-spotlight .glass-frame {
           zoom: 0.72 !important;
-          max-width: 100% !important;
+          max-width: none !important;
           margin: 0 auto !important;
         }
 
@@ -4473,7 +4462,7 @@
            Fixed now by scaling .glass-frame. */
         .lp-block-command .glass-frame {
           zoom: 0.6 !important;
-          max-width: 100% !important;
+          max-width: none !important;
           margin: 0 auto !important;
         }
 
@@ -4491,7 +4480,7 @@
         }
         .lp-block-forge .glass-frame {
           zoom: 0.62 !important;
-          max-width: 100% !important;
+          max-width: none !important;
         }
         /* Zoom card hovers UPPER-right so it obscures the LP info card +
            "skool.com/leadphoenix-forge" link (mirrors desktop behavior). */
