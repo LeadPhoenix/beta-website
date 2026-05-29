@@ -5713,32 +5713,42 @@
       'dashboard-row':  { type: 'el',  sel: '.scene-results .dashboard-target' },
     };
 
+    // Walk up the offsetParent chain to compute an element's layout
+     // position relative to a given ancestor. Unlike getBoundingClientRect,
+     // this is NOT affected by in-progress CSS transforms on intermediate
+     // ancestors — critical because the login scene plays a transform:scale
+     // opening animation while we're trying to position the cursor on its
+     // button. getBoundingClientRect would give the mid-scale position
+     // (near the transform-origin), making the cursor land in the wrong
+     // spot. offsetTop/Left gives the resting layout position.
+    function offsetPosTo(el, ancestor) {
+      let top = 0, left = 0, n = el;
+      while (n && n !== ancestor) {
+        top  += n.offsetTop;
+        left += n.offsetLeft;
+        n = n.offsetParent;
+      }
+      return { top, left };
+    }
+
     function moveCursorTo(targetName) {
       if (!cursor) return;
       const t = cursorTargets[targetName];
       if (!t) return;
       const stage = document.getElementById('stage');
-      // offsetWidth is pre-zoom layout size; getBoundingClientRect is
-      // post-zoom visual size. The ratio gives us the effective zoom so
-      // element rects (which are post-zoom) can be converted to layout
-      // space, which is what cursor's transform translate operates in.
       const layoutW = stage.offsetWidth  || 1;
       const layoutH = stage.offsetHeight || 1;
-      const stageRect = stage.getBoundingClientRect();
-      const zoomX = layoutW / (stageRect.width  || layoutW);
-      const zoomY = layoutH / (stageRect.height || layoutH);
 
       let x, y;
       if (t.type === 'el') {
         const el = document.querySelector(t.sel);
         if (!el) return;
-        const elRect = el.getBoundingClientRect();
-        // Position cursor tip near the element's center (slight up-left bias
-        // so the SVG arrow's point lands on it, matching how a real mouse
-        // would click). The cursor SVG has its pointer in the top-left
-        // quadrant — translate puts cursor's TOP-LEFT at (x,y).
-        x = (elRect.left + elRect.width  * 0.5 - stageRect.left) * zoomX - 6;
-        y = (elRect.top  + elRect.height * 0.5 - stageRect.top ) * zoomY - 4;
+        // Layout-space position (transform-independent)
+        const pos = offsetPosTo(el, stage);
+        // Position cursor's top-left so the SVG arrow's tip (~3-4px from
+        // the cursor's own top-left) lands at the element's visual center.
+        x = pos.left + el.offsetWidth  * 0.5 - 6;
+        y = pos.top  + el.offsetHeight * 0.5 - 4;
       } else {
         x = (t.x / 100) * layoutW;
         y = (t.y / 100) * layoutH;
