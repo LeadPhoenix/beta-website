@@ -1021,126 +1021,9 @@
       .nav .links .hide-sm { display: none; }
     }
 
-    /* ═══════════════════════════════════════════════════════════════════
-       MOBILE GATE — splash overlay shown only at ≤768px.
-       Loaded in <head> so it appears instantly with the page (no FOUC).
-       Removable: delete this entire block + the .mobile-gate HTML.
-       ═══════════════════════════════════════════════════════════════════ */
-    .mobile-gate { display: none; }
-
-    @media (max-width: 768px) {
-      .mobile-gate {
-        display: flex;
-        position: fixed;
-        inset: 0;
-        z-index: 9998; /* below the apply modal (9999), above everything else */
-        background:
-          radial-gradient(ellipse 80% 60% at 50% 30%, rgba(255, 108, 40, 0.10) 0%, transparent 60%),
-          linear-gradient(195deg,
-            rgba(18, 14, 38, 1) 0%,
-            rgba(3, 4, 10, 1) 65%,
-            rgba(12, 30, 56, 1) 100%);
-        align-items: center;
-        justify-content: center;
-        padding: 32px 28px;
-        animation: mobileGateIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-      }
-      .mobile-gate.dismissed { display: none; }
-      /* Lock body scroll while gate is up so the page beneath doesn't bleed through */
-      body:has(.mobile-gate:not(.dismissed)) { overflow: hidden; }
-    }
-    @keyframes mobileGateIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-    .mobile-gate-inner {
-      max-width: 380px;
-      width: 100%;
-      text-align: center;
-      animation: mobileGateRise 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) 0.1s both;
-    }
-    @keyframes mobileGateRise {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .mobile-gate-logo {
-      height: 38px;
-      width: auto;
-      display: block;
-      margin: 0 auto 32px;
-      opacity: 0.92;
-    }
-    .mobile-gate-headline {
-      font: 800 30px/1.12 'Source Sans 3', -apple-system, sans-serif;
-      color: #fff;
-      letter-spacing: -0.02em;
-      margin: 0 0 14px;
-    }
-    .mobile-gate-sub {
-      font: 400 15px/1.6 'Source Sans 3', sans-serif;
-      color: rgba(255, 255, 255, 0.72);
-      margin: 0 0 32px;
-    }
-    .mobile-gate-cta {
-      display: block;
-      width: 100%;
-      padding: 16px 22px;
-      background: linear-gradient(180deg, #FF7A3A 0%, #F15A1C 100%);
-      border: 1px solid rgba(247, 42, 23, 0.55);
-      border-radius: 12px;
-      color: #fff;
-      font: 700 15.5px 'Source Sans 3', sans-serif;
-      cursor: pointer;
-      letter-spacing: -0.005em;
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.2),
-        0 8px 24px -6px rgba(247, 42, 23, 0.5);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      font-family: 'Source Sans 3', -apple-system, sans-serif;
-    }
-    .mobile-gate-cta:active {
-      transform: translateY(1px);
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.15),
-        0 4px 14px -4px rgba(247, 42, 23, 0.4);
-    }
-    .mobile-gate-view {
-      display: block;
-      width: 100%;
-      margin-top: 18px;
-      background: none;
-      border: none;
-      color: rgba(255, 255, 255, 0.45);
-      font: 500 13px 'Source Sans 3', sans-serif;
-      cursor: pointer;
-      padding: 8px;
-      font-family: inherit;
-      transition: color 0.2s ease;
-    }
-    .mobile-gate-view:hover,
-    .mobile-gate-view:active { color: rgba(255, 255, 255, 0.8); }
   </style>
 </head>
 <body>
-
-  <!-- ─────────────────────────────────────────────────────────────────────
-       MOBILE GATE — temporary splash shown only at ≤768px while the mobile
-       experience is being built. Desktop users never see this. Removable
-       in 10 seconds: delete this <div> + the .mobile-gate style block.
-       ───────────────────────────────────────────────────────────────────── -->
-  <div class="mobile-gate" id="mobileGate">
-    <div class="mobile-gate-inner">
-      <img class="mobile-gate-logo" src="./Large-Transparent.png" alt="LeadPhoenix" />
-      <h1 class="mobile-gate-headline">Best on desktop.</h1>
-      <p class="mobile-gate-sub">
-        We&rsquo;re putting the finishing touches on the mobile version of LeadPhoenix.
-        For the full demo, please visit on a laptop or desktop browser.
-        Mobile launches within 24&nbsp;hours.
-      </p>
-      <button class="mobile-gate-cta" type="button" data-apply-trigger>Apply for Founders Beta</button>
-      <button class="mobile-gate-view" type="button" id="mobileGateView">View mobile preview anyway</button>
-    </div>
-  </div>
 
   <div class="ambient" id="ambient">
     <div class="grid" id="grid"></div>
@@ -1663,6 +1546,31 @@
       @keyframes typingPulse {
         0%, 100% { opacity: 0.3; transform: translateY(0); }
         50% { opacity: 1; transform: translateY(-2px); }
+      }
+      /* Orange-side typing dots (agent typing) — mirrors .msg-out style */
+      .msg-typing.msg-typing-out {
+        background: linear-gradient(135deg, #FF6C28, #F72A17);
+        align-self: flex-end;
+        border-bottom-right-radius: 5px;
+        border-bottom-left-radius: 16px;
+      }
+      .msg-typing.msg-typing-out span { background: rgba(255,255,255,0.78); }
+
+      /* Animated SMS sequence — hidden by default, JS toggles .shown to
+         play each step. display:none keeps them out of the flex flow so
+         no gap is reserved. Pop-in animation runs when .shown is added. */
+      .msg-anim { display: none; }
+      .msg-anim.shown {
+        display: block;
+        animation: msgPopIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      /* Typing bubbles need display:flex (3 inline span dots), not block.
+         Without this override, the typing dots collapse into an empty
+         pill-shape — exactly what Vinny saw. */
+      .msg-typing.msg-anim.shown { display: flex; }
+      @keyframes msgPopIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
       }
 
       /* Module reveals — text column + visual column fire as ONE block
@@ -4397,7 +4305,16 @@
           margin: 0 auto !important;
           text-align: left !important;
         }
-        .hero .eyebrow { font-size: 12px !important; margin-bottom: 18px !important; }
+        /* Eyebrow: shrink + tighten letter-spacing so the long copy
+           "For the Modern Life Insurance Professional" fits on one line */
+        .hero .eyebrow {
+          font-size: 9.5px !important;
+          letter-spacing: 0.05em !important;
+          padding: 5px 10px 5px 9px !important;
+          gap: 8px !important;
+          margin-bottom: 18px !important;
+          white-space: nowrap !important;
+        }
         .headline { font-size: 36px !important; line-height: 1.1 !important; }
         .subhead { font-size: 16px !important; line-height: 1.55 !important; margin: 22px 0 !important; }
         .cta-row { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; }
@@ -4410,7 +4327,21 @@
           justify-content: center !important;
         }
         .cta-meta { font-size: 12px !important; margin-top: 14px !important; }
-        .hero-demo { display: none !important; }
+
+        /* Hero demo — restored on mobile and scaled proportionally via zoom.
+           The desktop demo is built at ~580px wide with absolutely-positioned
+           internal scenes. `zoom` shrinks the entire subtree (incl. layout
+           footprint) so it slots cleanly below the hero text instead of being
+           hidden. Desktop margin-right negative is reset. */
+        .hero-demo {
+          display: block !important;
+          opacity: 1 !important;
+          zoom: 0.58;
+          margin: 28px auto 0 !important;
+          padding: 0 !important;
+          max-width: 580px !important;
+        }
+        .hero-demo .demo { max-width: 100% !important; }
 
         /* ─── WHY-NOW (the manifesto + 4 blurbs) ─── */
         .why-now { padding: 60px 20px 70px !important; }
@@ -4420,17 +4351,40 @@
         .benefit-grid {
           display: flex !important;
           flex-direction: column !important;
-          gap: 24px !important;
+          gap: 18px !important;
           margin-top: 36px !important;
         }
-        .benefit-block { padding: 0 !important; }
+        /* Restore desktop-like card padding so icon/text breathe properly */
+        .benefit-block { padding: 22px 20px !important; }
 
-        /* ─── MODULE BLOCKS — already stack at 980px, but the visuals need
-               taming for phone widths. The complex absolute-positioned
-               sub-cards (lead card, zoom card, MMS engine) don't fit; hide
-               them so the main visual still reads. */
-        .lp-block { padding: 50px 20px 60px !important; }
-        .lp-floater .lp-block { padding: 50px 20px !important; }
+        /* ─── MODULE BLOCKS — tight mobile padding (cut roughly in half
+               vs prior pass). Reduces dead space between modules.
+               The 24px between sibling blocks adds breathing room between
+               SPRINT phone and REVIVE eyebrow per Vinny's spec. */
+        .lp-block { padding: 20px 20px 36px !important; }
+        .lp-block + .lp-block { padding-top: 24px !important; }
+        .lp-floater .lp-block { padding: 12px 20px 16px !important; }
+
+        /* Tight text→visual gap inside each module */
+        .module-inner { gap: 22px !important; }
+
+        /* DIVIDER negative margins + inner padding — keep blurb-divider
+           clearance but cut the rest of the dead space. */
+        .lp-divider-1 { margin-top: -20px !important; }
+        .lp-divider-2 { margin-top: -20px !important; }
+        .lp-divider-3 { margin-top: 0 !important; }
+        .lp-floater { margin: 8px 0 !important; }
+        .lp-divider-inner { padding: 14px 0 22px !important; }
+
+        /* LAUNCH section padding — tight gap from FORGE divider above,
+           and the REAL fix for the headline→image gap: .lp-launch-intro
+           has a 60px bottom margin by default. Cut to 14px on mobile.
+           Also kill the wrap's 80px horizontal padding so the image gets
+           the full mobile width. */
+        .lp-launch-section { padding: 18px 0 36px !important; }
+        .lp-launch-intro { margin-bottom: 14px !important; padding: 0 22px !important; }
+        .lp-launch-headline,
+        .lp-launch-section h2 { margin-bottom: 0 !important; }
         .module-text { max-width: 100% !important; }
         .module-h2,
         .lp-block h2 { font-size: 28px !important; line-height: 1.15 !important; }
@@ -4438,57 +4392,133 @@
         .lp-block p { font-size: 16px !important; line-height: 1.6 !important; }
         .lp-mod-eyebrow { font-size: 11px !important; }
 
-        /* Hide the complex sub-card overlays that can't render at phone size */
-        .mockup-mms,
-        .mockup-zoom,
+        /* Hide ONLY the orphan overlays that don't read at any phone scale.
+           NOTE: .lead-incoming stays VISIBLE — it's the inward-flying card
+           in the MMS engine pull-in animation. Hiding it killed the
+           animation Vinny wants preserved. */
         .conv-stream,
-        .lead-incoming,
         .mockup-mms-spotlight-placeholder { display: none !important; }
 
-        /* Scale down module visuals so they fit phone width */
-        .module-visual { max-width: 100% !important; overflow: hidden !important; }
-        .glass-frame,
-        .mockup-skool,
-        .mockup-command,
+        /* Lead-card paper: never wrap labels/values on form rows
+           (Date of Birth / Home Phone / Cellular / Best time to call) */
+        .lcs-form-row .lcs-label,
+        .lcs-form-row .lcs-handwritten,
+        .lcs-form-row > * { white-space: nowrap !important; }
+
+        /* Reset desktop transforms on module visuals */
+        .module-visual {
+          max-width: 100% !important;
+          overflow: visible !important;
+          position: relative !important;
+        }
+        .glass-frame { transform: none !important; }
         .lp-launch-image-wrap { transform: none !important; }
 
-        /* SPRINT — shrink the phone mockup */
+        /* SPRINT — scale the entire phone-in-glass-frame down. Internal
+           SMS bubbles stay in proportion. */
         .lp-block-sprint .glass-frame {
-          max-width: 320px !important;
+          zoom: 0.62 !important;
+          max-width: none !important;
           margin: 0 auto !important;
         }
 
-        /* REVIVE — hide the orbiting cards engine (too small to read on phone) */
-        #leadCards,
-        .lp-block-revive .lead-orbit,
-        .lp-block-revive .lp-revive-engine { display: none !important; }
-
-        /* COMMAND — shrink mockup, keep static visual */
-        .mockup-command,
-        .cmd-mockup {
-          max-width: 100% !important;
-          transform: none !important;
+        /* REVIVE — text first, visual second (avoid image-image stacking).
+           The COMMAND conversation view IS the visual: scale the whole
+           glass-frame proportionally so the text bubbles stay readable.
+           The lead-card sub-card (.mockup-mms) hovers over the bottom-right
+           of the conv-frame like on desktop, just scaled. */
+        .module-revive {
+          display: flex !important;
+          flex-direction: column !important;
+        }
+        .module-revive .module-text { order: 1 !important; }
+        .module-revive .module-visual {
+          order: 2 !important;
+          margin-top: 28px !important;
+        }
+        .lp-block-revive .glass-frame {
+          zoom: 0.56 !important;
+          max-width: none !important;
+          margin: 0 auto !important;
+        }
+        .lp-block-revive .mockup-mms {
+          zoom: 0.56 !important;
+          right: 0 !important;
+          bottom: -10px !important;
         }
 
-        /* FORGE — Skool mockup needs to fit */
-        .mockup-skool { max-width: 100% !important; font-size: 11px !important; }
+        /* DYNAMIC MMS spotlight — the pulsing core + orbital lead cards.
+           Scale the whole engine so the orbital cards remain visible and
+           the pull-in animation is preserved on mobile. */
+        .lp-block-mms-spotlight .glass-frame {
+          zoom: 0.72 !important;
+          max-width: none !important;
+          margin: 0 auto !important;
+        }
 
-        /* LAUNCH — shrink the UI image */
+        /* COMMAND — scale the full login-stage mockup (the actual class is
+           .mockup-command-stage inside .glass-frame). Earlier v152 targeted
+           .mockup-command which doesn't exist, so no scaling was applied.
+           Fixed now by scaling .glass-frame. */
+        .lp-block-command .glass-frame {
+          zoom: 0.6 !important;
+          max-width: none !important;
+          margin: 0 auto !important;
+        }
+
+        /* FORGE — text first, visual second (matches SPRINT/REVIVE pattern,
+           prevents image-image stacking between COMMAND visual and FORGE
+           visual). */
+        .module-forge {
+          display: flex !important;
+          flex-direction: column !important;
+        }
+        .module-forge .module-text { order: 1 !important; }
+        .module-forge .module-visual {
+          order: 2 !important;
+          margin-top: 22px !important;
+        }
+        .lp-block-forge .glass-frame {
+          zoom: 0.62 !important;
+          max-width: none !important;
+        }
+        /* Zoom card hovers UPPER-right so it obscures the LP info card +
+           "skool.com/leadphoenix-forge" link (mirrors desktop behavior). */
+        .lp-block-forge .mockup-zoom {
+          zoom: 0.6 !important;
+          right: 0 !important;
+          top: 8px !important;
+          bottom: auto !important;
+        }
+
+        /* LAUNCH — UI image full width, kill desktop's 80px horizontal
+           padding, tight top margin (real gap fix is on .lp-launch-intro) */
         .lp-launch-image-wrap {
           max-width: 100% !important;
-          margin: 24px auto 40px !important;
+          margin: 0 auto 28px !important;
+          padding: 0 16px !important;
         }
         .lp-launch-image { max-width: 100% !important; height: auto !important; }
 
-        /* ─── PRICING — stack 3 tiers vertically ─── */
-        .lp-pricing-section { padding: 50px 0 60px !important; }
+        /* ─── PRICING — stack 3 tiers vertically with tight spacing ─── */
+        .lp-pricing-section { padding: 28px 0 40px !important; }
         .lp-pricing-headline { font-size: 30px !important; padding: 0 20px !important; }
-        .lp-pricing-sub { font-size: 15px !important; padding: 0 20px !important; }
+        .lp-pricing-subhead,
+        .lp-pricing-sub {
+          font-size: 15px !important;
+          padding: 0 20px !important;
+          margin-bottom: 0 !important;
+        }
+        /* The REAL gap source: .lp-pricing-header has margin-bottom: 56px
+           in desktop CSS. Cut to 12px on mobile so the subhead sits close
+           to the first tier card. */
+        .lp-pricing-header { margin-bottom: 12px !important; }
         .lp-pricing-grid {
           display: flex !important;
           flex-direction: column !important;
-          gap: 20px !important;
+          gap: 16px !important;
           padding: 0 20px !important;
+          margin-top: 0 !important;
           max-width: 100% !important;
         }
         .lp-pricing-tier {
@@ -4497,14 +4527,65 @@
         }
         .lp-pricing-tier-price { font-size: 38px !important; }
 
-        /* Razor Ridge partner card */
-        .lp-proof-partner { padding: 28px 22px !important; }
-        .lp-proof-partner-logos { flex-direction: column !important; gap: 16px !important; align-items: center !important; }
+        /* Tier order on mobile: OS Founder first (highlighted offer should
+           be top of the vertical stack), OS Partner second, OS Agency third.
+           Uses CSS order — HTML source stays unchanged so desktop layout
+           is untouched. */
+        .lp-pricing-grid > .lp-pricing-founders { order: 1 !important; }
+        .lp-pricing-grid > .lp-pricing-standard:not(.lp-pricing-agency) { order: 2 !important; }
+        .lp-pricing-grid > .lp-pricing-agency { order: 3 !important; }
 
-        /* ─── CTA STRIP ─── */
-        .lp-cta-strip { padding: 50px 20px 70px !important; }
-        .lp-cta-strip-tagline { font-size: 26px !important; line-height: 1.18 !important; }
-        .lp-cta-strip-subline { font-size: 14px !important; }
+        /* Show the manual break in the pricing subhead only on mobile */
+        .lp-pricing-subhead .lp-mobile-br { display: inline !important; }
+
+        /* Razor Ridge partner card — fix logo overflow, tighten eyebrow,
+           left-align body for mobile readability */
+        .lp-proof-partner { padding: 28px 22px !important; }
+        .lp-proof-partner-logos {
+          flex-direction: column !important;
+          gap: 16px !important;
+          align-items: center !important;
+        }
+        .lp-proof-partner-logo-wrap {
+          max-width: 100% !important;
+          width: auto !important;
+          height: auto !important;
+        }
+        .lp-proof-partner-logo-wrap img {
+          max-width: 100% !important;
+          max-height: 36px !important;
+          width: auto !important;
+          height: auto !important;
+          display: block !important;
+        }
+        /* Tighter eyebrow so "Proud partner of Razor Ridge Leads" doesn't
+           wrap awkwardly */
+        .lp-proof-partner .eyebrow,
+        .lp-proof-partner-headline .eyebrow {
+          font-size: 9.5px !important;
+          letter-spacing: 0.05em !important;
+          padding: 5px 10px 5px 9px !important;
+          gap: 8px !important;
+          white-space: nowrap !important;
+        }
+        /* Vinny preference: center the entire partner card on mobile */
+        .lp-proof-partner,
+        .lp-proof-partner p,
+        .lp-proof-partner-body,
+        .lp-proof-partner-body p,
+        .lp-proof-partner-headline {
+          text-align: center !important;
+        }
+
+        /* ─── CTA STRIP — button moved UP: less space above (subline → button
+           gap cut in half), more space gained below (button → footer gap). */
+        .lp-cta-strip { padding: 28px 20px 60px !important; }
+        .lp-cta-strip-tagline { font-size: 26px !important; line-height: 1.18 !important; margin-bottom: 10px !important; }
+        .lp-cta-strip-subline { font-size: 14px !important; margin-bottom: 14px !important; }
+        .lp-cta-strip-button {
+          margin-top: 14px !important;  /* was effectively 30+ */
+          margin-bottom: 28px !important;  /* gain space below button */
+        }
         .lp-cta-strip-button,
         .lp-cta-strip a.btn,
         .lp-cta-strip-button a {
@@ -4609,7 +4690,13 @@
                       <div class="msg msg-in">Sure, I&rsquo;m at work but ok</div>
                       <div class="msg msg-out">No problem. Any time after 6pm work better?</div>
                       <div class="msg msg-in">Yeah 7 is good</div>
-                      <div class="msg msg-typing"><span></span><span></span><span></span></div>
+                      <!-- Animated SMS sequence: hidden initially, plays on loop when
+                           SPRINT enters viewport. Pattern: typing-out → bubble-out →
+                           typing-in → bubble-in → pause → reset. -->
+                      <div class="msg msg-typing msg-typing-out msg-anim" data-anim-step="1"><span></span><span></span><span></span></div>
+                      <div class="msg msg-out msg-anim" data-anim-step="2">Great, you&rsquo;re all set for tomorrow at 7pm. I&rsquo;ll call you from this number &mdash; talk soon!</div>
+                      <div class="msg msg-typing msg-anim" data-anim-step="3"><span></span><span></span><span></span></div>
+                      <div class="msg msg-in msg-anim" data-anim-step="4">Thanks so much. My husband and I will be ready for the call.</div>
                     </div>
                   </div>
                 </div>
@@ -5094,7 +5181,7 @@
         <div class="lp-pricing-header">
           <div class="eyebrow">Pricing</div>
           <h2 class="lp-pricing-headline">LP OS is in founder launch.</h2>
-          <p class="lp-pricing-subhead">Public pricing will increase once we&rsquo;re out of private beta.</p>
+          <p class="lp-pricing-subhead">Public pricing will increase<br class="lp-mobile-br"> once we&rsquo;re out of private beta.</p>
         </div>
 
         <div class="lp-pricing-grid">
@@ -5610,13 +5697,20 @@
     // Cursor + counters
     const cursor = document.getElementById('cursor');
 
-    // Cursor positions as percentages of the demo stage
+    // Cursor targets — prefer element selectors over hardcoded percentages.
+    // Why: dashboard nav rows use fixed pixel heights, so the REVIVE button's
+    // % position changes with stage height. Desktop stage is ~537px tall and
+    // REVIVE lands at ~47%; mobile stage (zoomed) is 357px tall and REVIVE
+    // lands at ~74%. Hardcoded percentages worked for desktop but missed by
+    // 27% on mobile. Computing from actual element rects works on both.
+    // Falls back to percentages for the 'rest' position where no element
+    // anchor exists.
     const cursorTargets = {
-      'rest':           { x: 70, y: 70 },
-      'revive':         { x: 9,  y: 47 },
-      'login-btn':      { x: 50, y: 71 },
-      'upload-btn':     { x: 50, y: 75 },
-      'dashboard-row':  { x: 9,  y: 13 },
+      'rest':           { type: 'pct', x: 70, y: 70 },
+      'revive':         { type: 'el',  sel: '#reviveItem' },
+      'login-btn':      { type: 'el',  sel: '.scene-login .login-btn' },
+      'upload-btn':     { type: 'el',  sel: '#uploadBtn' },
+      'dashboard-row':  { type: 'el',  sel: '.scene-results .dashboard-target' },
     };
 
     function moveCursorTo(targetName) {
@@ -5624,9 +5718,31 @@
       const t = cursorTargets[targetName];
       if (!t) return;
       const stage = document.getElementById('stage');
-      const rect = stage.getBoundingClientRect();
-      const x = (t.x / 100) * rect.width;
-      const y = (t.y / 100) * rect.height;
+      // offsetWidth is pre-zoom layout size; getBoundingClientRect is
+      // post-zoom visual size. The ratio gives us the effective zoom so
+      // element rects (which are post-zoom) can be converted to layout
+      // space, which is what cursor's transform translate operates in.
+      const layoutW = stage.offsetWidth  || 1;
+      const layoutH = stage.offsetHeight || 1;
+      const stageRect = stage.getBoundingClientRect();
+      const zoomX = layoutW / (stageRect.width  || layoutW);
+      const zoomY = layoutH / (stageRect.height || layoutH);
+
+      let x, y;
+      if (t.type === 'el') {
+        const el = document.querySelector(t.sel);
+        if (!el) return;
+        const elRect = el.getBoundingClientRect();
+        // Position cursor tip near the element's center (slight up-left bias
+        // so the SVG arrow's point lands on it, matching how a real mouse
+        // would click). The cursor SVG has its pointer in the top-left
+        // quadrant — translate puts cursor's TOP-LEFT at (x,y).
+        x = (elRect.left + elRect.width  * 0.5 - stageRect.left) * zoomX - 6;
+        y = (elRect.top  + elRect.height * 0.5 - stageRect.top ) * zoomY - 4;
+      } else {
+        x = (t.x / 100) * layoutW;
+        y = (t.y / 100) * layoutH;
+      }
       cursor.style.transform = `translate(${x}px, ${y}px)`;
     }
 
@@ -7441,26 +7557,83 @@
     })();
   </script>
 
-  <!-- ─────────────────────────────────────────────────────────────────────
-       MOBILE GATE — dismiss handler. Removable: delete this script + the
-       gate HTML (top of body) + the .mobile-gate style block (in <head>).
-       ───────────────────────────────────────────────────────────────────── -->
   <script>
-    (function initMobileGate() {
-      const gate = document.getElementById('mobileGate');
-      const view = document.getElementById('mobileGateView');
-      if (!gate || !view) return;
-      view.addEventListener('click', () => {
-        gate.classList.add('dismissed');
-      });
-    })();
-
     // Hero fade-in trigger. Double rAF guarantees we're past the first
     // paint before adding .is-loaded, so the fade animation is visible
     // on every navigation (not just refresh).
     requestAnimationFrame(() => requestAnimationFrame(() => {
       document.body.classList.add('is-loaded');
     }));
+
+    /* SPRINT phone — animated appointment-confirmation sequence.
+       Plays once the SPRINT module enters viewport, then loops with a
+       short pause. Sequence: agent typing → confirmation bubble →
+       lead typing → thank-you bubble → pause → reset.
+       Applies on both desktop and mobile (same phone mockup).
+       Perf: when SPRINT exits viewport, the loop polls instead of
+       animating — no DOM thrash, no class toggles, no compositor work
+       on a phone that nobody's looking at. */
+    (function initSprintConvoAnim() {
+      const phone = document.querySelector('.lp-block-sprint .mockup-phone');
+      if (!phone) return;
+      const steps = phone.querySelectorAll('.msg-anim');
+      if (steps.length < 4) return;
+
+      const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+      let visible = true;
+
+      async function waitUntilVisible() {
+        while (!visible) await sleep(400);
+      }
+
+      async function runOnce() {
+        await waitUntilVisible();
+        // Reset all steps
+        steps.forEach(s => s.classList.remove('shown'));
+        await sleep(1100);
+        await waitUntilVisible();
+        // Step 1: agent typing
+        steps[0].classList.add('shown');
+        await sleep(1300);
+        await waitUntilVisible();
+        // Step 2: hide typing, show confirmation bubble
+        steps[0].classList.remove('shown');
+        steps[1].classList.add('shown');
+        await sleep(1100);
+        await waitUntilVisible();
+        // Step 3: lead typing
+        steps[2].classList.add('shown');
+        await sleep(1300);
+        await waitUntilVisible();
+        // Step 4: hide typing, show thank-you bubble
+        steps[2].classList.remove('shown');
+        steps[3].classList.add('shown');
+        // Hold the completed convo for a beat before resetting + looping
+        await sleep(3200);
+        runOnce();
+      }
+
+      // Start when the phone enters viewport (or on load if no IO).
+      // After first start, the loop continues but pauses (via
+      // waitUntilVisible) whenever the phone scrolls out of view.
+      let started = false;
+      const startIfNeeded = () => {
+        if (started) return;
+        started = true;
+        runOnce();
+      };
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            visible = e.isIntersecting;
+            if (visible) startIfNeeded();
+          });
+        }, { threshold: 0.25 });
+        io.observe(phone);
+      } else {
+        startIfNeeded();
+      }
+    })();
   </script>
 
 </body>
