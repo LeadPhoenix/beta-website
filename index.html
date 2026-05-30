@@ -4434,10 +4434,11 @@
              transform-scaled with appropriate transform-origin
            ───────────────────────────────────────────────────────────────── */
 
-        /* SPRINT — aspect 6/5, scale 0.62, no overlay */
+        /* SPRINT — aspect 6/5, scale 0.55 (fits Galaxy S8+ 360vw narrowest
+           common Android viewport: 360 - 40 padding = 320 content area) */
         .lp-block-sprint .module-visual {
           width: 100% !important;
-          max-width: 360px !important;
+          max-width: 320px !important;
           aspect-ratio: 6 / 5 !important;
           margin: 0 auto !important;
           overflow: visible !important;
@@ -4449,7 +4450,7 @@
           width: 580px !important;
           max-width: none !important;
           margin: 0 !important;
-          transform: scale(0.62) !important;
+          transform: scale(0.55) !important;
           transform-origin: top left !important;
         }
 
@@ -4464,7 +4465,7 @@
           order: 2 !important;
           margin-top: 28px !important;
           width: 100% !important;
-          max-width: 325px !important;
+          max-width: 320px !important;
           aspect-ratio: 16 / 9 !important;
           margin-left: auto !important;
           margin-right: auto !important;
@@ -4477,7 +4478,7 @@
           width: 580px !important;
           max-width: none !important;
           margin: 0 !important;
-          transform: scale(0.56) !important;
+          transform: scale(0.55) !important;
           transform-origin: top left !important;
         }
         .lp-block-revive .mockup-mms {
@@ -4493,22 +4494,25 @@
              'scale' property to 'none' inline to prevent double-apply.
              If our 'scale' is !important, it beats GSAP's inline 'none',
              so scale gets applied TWICE (once via CSS scale, once via
-             GSAP's transform matrix) — net effect 0.56 × 0.56 = 0.31x,
+             GSAP's transform matrix) — net effect 0.55 × 0.55 = 0.30x,
              cards visibly half-size. Without !important, GSAP's inline
              'scale: none' wins after the scrub fires, leaving the scale
              only in the transform matrix (one application). Before GSAP
              fires, the CSS scale provides the initial sizing. */
-          scale: 0.56;
+          scale: 0.55;
           transform-origin: bottom right !important;
         }
 
-        /* DYNAMIC MMS spotlight — aspect 4/3, scale 0.72, engine + cards */
+        /* DYNAMIC MMS spotlight — aspect 4/3, scale 0.64 to fit 320 area
+           with engine layout width 500. ALSO important: engine container
+           must not overflow on Galaxy S8+ (was the cause of the divider-
+           overlapping-MMS-engine bug). */
         .lp-block-mms-spotlight .module-visual {
           width: 100% !important;
-          max-width: 360px !important;
+          max-width: 320px !important;
           aspect-ratio: 4 / 3 !important;
           margin: 0 auto !important;
-          overflow: visible !important;
+          overflow: hidden !important;
         }
         .lp-block-mms-spotlight .glass-frame {
           position: absolute !important;
@@ -4517,14 +4521,14 @@
           width: 500px !important;
           max-width: none !important;
           margin: 0 !important;
-          transform: scale(0.72) !important;
+          transform: scale(0.64) !important;
           transform-origin: top left !important;
         }
 
-        /* COMMAND — aspect 16/9 (overridden by line 2287 rule), scale 0.6 */
+        /* COMMAND — aspect 16/9, scale 0.55 */
         .lp-block-command .module-visual {
           width: 100% !important;
-          max-width: 348px !important;
+          max-width: 320px !important;
           aspect-ratio: 16 / 9 !important;
           margin: 0 auto !important;
           overflow: visible !important;
@@ -4536,7 +4540,7 @@
           width: 580px !important;
           max-width: none !important;
           margin: 0 !important;
-          transform: scale(0.6) !important;
+          transform: scale(0.55) !important;
           transform-origin: top left !important;
         }
 
@@ -4552,7 +4556,7 @@
           order: 2 !important;
           margin-top: 22px !important;
           width: 100% !important;
-          max-width: 360px !important;
+          max-width: 320px !important;
           aspect-ratio: 16 / 9 !important;
           margin-left: auto !important;
           margin-right: auto !important;
@@ -4565,7 +4569,7 @@
           width: 580px !important;
           max-width: none !important;
           margin: 0 !important;
-          transform: scale(0.62) !important;
+          transform: scale(0.55) !important;
           transform-origin: top left !important;
         }
         .lp-block-forge .mockup-zoom {
@@ -4578,7 +4582,7 @@
           /* No !important on scale — GSAP needs to override it with
              'scale: none' inline to prevent double-application via its
              normalized transform matrix. See REVIVE mockup-mms above. */
-          scale: 0.6;
+          scale: 0.55;
           transform-origin: top right !important;
         }
 
