@@ -4487,12 +4487,18 @@
           top: auto !important;
           left: auto !important;
           margin: 0 !important;
-          /* Use CSS Transforms L2 'scale' property (not the 'transform'
-             shorthand) so GSAP's ScrollTrigger scrub can still own the
-             'transform' property for its translateY animation. CSS scale +
-             transform compose automatically — visual order is scale first,
-             then GSAP's transform translate. */
-          scale: 0.56 !important;
+          /* CSS Transforms L2 'scale' property — but NO !important.
+             Reason: GSAP's CSSPlugin normalizes all transforms into the
+             'transform' matrix (incl. scale) and sets the separate
+             'scale' property to 'none' inline to prevent double-apply.
+             If our 'scale' is !important, it beats GSAP's inline 'none',
+             so scale gets applied TWICE (once via CSS scale, once via
+             GSAP's transform matrix) — net effect 0.56 × 0.56 = 0.31x,
+             cards visibly half-size. Without !important, GSAP's inline
+             'scale: none' wins after the scrub fires, leaving the scale
+             only in the transform matrix (one application). Before GSAP
+             fires, the CSS scale provides the initial sizing. */
+          scale: 0.56;
           transform-origin: bottom right !important;
         }
 
@@ -4569,9 +4575,10 @@
           bottom: auto !important;
           left: auto !important;
           margin: 0 !important;
-          /* CSS Transforms L2 'scale' property — leaves 'transform' free
-             for GSAP's scroll-scrub translateY animation. */
-          scale: 0.6 !important;
+          /* No !important on scale — GSAP needs to override it with
+             'scale: none' inline to prevent double-application via its
+             normalized transform matrix. See REVIVE mockup-mms above. */
+          scale: 0.6;
           transform-origin: top right !important;
         }
 
