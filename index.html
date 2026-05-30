@@ -4487,7 +4487,12 @@
           top: auto !important;
           left: auto !important;
           margin: 0 !important;
-          transform: scale(0.56) !important;
+          /* Use CSS Transforms L2 'scale' property (not the 'transform'
+             shorthand) so GSAP's ScrollTrigger scrub can still own the
+             'transform' property for its translateY animation. CSS scale +
+             transform compose automatically — visual order is scale first,
+             then GSAP's transform translate. */
+          scale: 0.56 !important;
           transform-origin: bottom right !important;
         }
 
@@ -4564,7 +4569,9 @@
           bottom: auto !important;
           left: auto !important;
           margin: 0 !important;
-          transform: scale(0.6) !important;
+          /* CSS Transforms L2 'scale' property — leaves 'transform' free
+             for GSAP's scroll-scrub translateY animation. */
+          scale: 0.6 !important;
           transform-origin: top right !important;
         }
 
