@@ -4411,22 +4411,50 @@
           overflow: visible !important;
           position: relative !important;
         }
-        .glass-frame { transform: none !important; }
         .lp-launch-image-wrap { transform: none !important; }
 
-        /* SPRINT — scale the entire phone-in-glass-frame down. Internal
-           SMS bubbles stay in proportion. */
-        .lp-block-sprint .glass-frame {
-          zoom: 0.62 !important;
-          max-width: none !important;
+        /* ─────────────────────────────────────────────────────────────────
+           MOCKUP SCALING — uses transform: scale() instead of CSS zoom.
+           Why: zoom is non-standard and iPhone 17/iOS 26 Safari interprets
+           it differently from Chromium (effectively as a no-op for
+           fractional values), making mockups render at full unscaled size.
+           transform: scale() is universally supported with identical
+           behavior across all browsers.
+
+           Pattern per mockup:
+           - .module-visual = fixed-width wrapper with explicit aspect-ratio
+             (matches the scaled mockup's visual dimensions, centered via
+             margin: 0 auto)
+           - .glass-frame = absolutely positioned at top-left, original
+             desktop layout width (so internal pixel-sized content stays
+             in proportion), scaled down via transform from top-left
+             origin so the visual fills exactly the wrapper's width
+           - Overlay sub-cards (.mockup-mms, .mockup-zoom) = absolutely
+             positioned to hover at a corner of the wrapper, also
+             transform-scaled with appropriate transform-origin
+           ───────────────────────────────────────────────────────────────── */
+
+        /* SPRINT — aspect 6/5, scale 0.62, no overlay */
+        .lp-block-sprint .module-visual {
+          width: 100% !important;
+          max-width: 360px !important;
+          aspect-ratio: 6 / 5 !important;
           margin: 0 auto !important;
+          overflow: visible !important;
+        }
+        .lp-block-sprint .glass-frame {
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 580px !important;
+          max-width: none !important;
+          margin: 0 !important;
+          transform: scale(0.62) !important;
+          transform-origin: top left !important;
         }
 
-        /* REVIVE — text first, visual second (avoid image-image stacking).
-           The COMMAND conversation view IS the visual: scale the whole
-           glass-frame proportionally so the text bubbles stay readable.
-           The lead-card sub-card (.mockup-mms) hovers over the bottom-right
-           of the conv-frame like on desktop, just scaled. */
+        /* REVIVE — aspect 16/9, scale 0.56, has .mockup-mms overlay at
+           bottom-right corner. Text-first order applied below. */
         .module-revive {
           display: flex !important;
           flex-direction: column !important;
@@ -4435,40 +4463,75 @@
         .module-revive .module-visual {
           order: 2 !important;
           margin-top: 28px !important;
+          width: 100% !important;
+          max-width: 325px !important;
+          aspect-ratio: 16 / 9 !important;
+          margin-left: auto !important;
+          margin-right: auto !important;
+          overflow: visible !important;
         }
         .lp-block-revive .glass-frame {
-          zoom: 0.56 !important;
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 580px !important;
           max-width: none !important;
-          margin: 0 auto !important;
+          margin: 0 !important;
+          transform: scale(0.56) !important;
+          transform-origin: top left !important;
         }
         .lp-block-revive .mockup-mms {
-          zoom: 0.56 !important;
-          right: 0 !important;
-          bottom: -10px !important;
+          position: absolute !important;
+          right: -8px !important;
+          bottom: -16px !important;
+          top: auto !important;
+          left: auto !important;
+          margin: 0 !important;
+          transform: scale(0.56) !important;
+          transform-origin: bottom right !important;
         }
 
-        /* DYNAMIC MMS spotlight — the pulsing core + orbital lead cards.
-           Scale the whole engine so the orbital cards remain visible and
-           the pull-in animation is preserved on mobile. */
+        /* DYNAMIC MMS spotlight — aspect 4/3, scale 0.72, engine + cards */
+        .lp-block-mms-spotlight .module-visual {
+          width: 100% !important;
+          max-width: 360px !important;
+          aspect-ratio: 4 / 3 !important;
+          margin: 0 auto !important;
+          overflow: visible !important;
+        }
         .lp-block-mms-spotlight .glass-frame {
-          zoom: 0.72 !important;
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 500px !important;
           max-width: none !important;
-          margin: 0 auto !important;
+          margin: 0 !important;
+          transform: scale(0.72) !important;
+          transform-origin: top left !important;
         }
 
-        /* COMMAND — scale the full login-stage mockup (the actual class is
-           .mockup-command-stage inside .glass-frame). Earlier v152 targeted
-           .mockup-command which doesn't exist, so no scaling was applied.
-           Fixed now by scaling .glass-frame. */
+        /* COMMAND — aspect 16/9 (overridden by line 2287 rule), scale 0.6 */
+        .lp-block-command .module-visual {
+          width: 100% !important;
+          max-width: 348px !important;
+          aspect-ratio: 16 / 9 !important;
+          margin: 0 auto !important;
+          overflow: visible !important;
+        }
         .lp-block-command .glass-frame {
-          zoom: 0.6 !important;
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 580px !important;
           max-width: none !important;
-          margin: 0 auto !important;
+          margin: 0 !important;
+          transform: scale(0.6) !important;
+          transform-origin: top left !important;
         }
 
-        /* FORGE — text first, visual second (matches SPRINT/REVIVE pattern,
-           prevents image-image stacking between COMMAND visual and FORGE
-           visual). */
+        /* FORGE — aspect 16/9, scale 0.62, has .mockup-zoom overlay at
+           upper-right (covers the Skool LP info card area). Text-first
+           order applied. */
         .module-forge {
           display: flex !important;
           flex-direction: column !important;
@@ -4477,18 +4540,32 @@
         .module-forge .module-visual {
           order: 2 !important;
           margin-top: 22px !important;
+          width: 100% !important;
+          max-width: 360px !important;
+          aspect-ratio: 16 / 9 !important;
+          margin-left: auto !important;
+          margin-right: auto !important;
+          overflow: visible !important;
         }
         .lp-block-forge .glass-frame {
-          zoom: 0.62 !important;
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 580px !important;
           max-width: none !important;
+          margin: 0 !important;
+          transform: scale(0.62) !important;
+          transform-origin: top left !important;
         }
-        /* Zoom card hovers UPPER-right so it obscures the LP info card +
-           "skool.com/leadphoenix-forge" link (mirrors desktop behavior). */
         .lp-block-forge .mockup-zoom {
-          zoom: 0.6 !important;
-          right: 0 !important;
-          top: 8px !important;
+          position: absolute !important;
+          right: -6px !important;
+          top: -6px !important;
           bottom: auto !important;
+          left: auto !important;
+          margin: 0 !important;
+          transform: scale(0.6) !important;
+          transform-origin: top right !important;
         }
 
         /* LAUNCH — UI image full width, kill desktop's 80px horizontal
