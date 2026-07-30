@@ -3771,6 +3771,13 @@
         height: 8px;
         margin-top: -4px;
       }
+      /* Usage disclosure — muted, sits under the prepay line. FTC-clean:
+         discloses pass-through usage billing next to the price itself. */
+      .lp-pricing-tier-usage {
+        font: 500 12px 'Source Sans 3', sans-serif;
+        color: rgba(255, 255, 255, 0.45);
+        margin-top: 4px;
+      }
 
       /* Feature list — divider sits tight to the elements above it now,
          not floating in 28px+ of dead space. */
@@ -5339,6 +5346,7 @@
             </div>
             <div class="lp-pricing-tier-setup">+ $2,500 setup</div>
             <div class="lp-pricing-tier-alt">or $12,000/yr prepay &middot; $0 setup</div>
+            <div class="lp-pricing-tier-usage">+ messaging &amp; data usage, billed at cost</div>
             <ul class="lp-pricing-tier-features">
               <li>SPRINT automations wired with humanizing artifacts and reply-gates for your new high-intent leads, so speed-to-lead and follow-up run without you babysitting it</li>
               <li>REVIVE recursive long-tail nurture campaigns for your older leads, with Dynamic MMS built in</li>
@@ -5443,6 +5451,17 @@
                 <div class="lp-faq-body">
                   <p>Average setup is <strong>10&ndash;14 days</strong> from when your setup fee clears.</p>
                   <p>Your monthly subscription does not start until <strong>setup is complete and your account is at go&#8209;live</strong>. That buffer is there so you can get used to the system, get it producing, and make money before any monthly charge hits. No double-charging. No rushed handoff.</p>
+                </div>
+              </details>
+
+              <details class="lp-faq-item">
+                <summary>
+                  <span class="lp-faq-q">What about texting and data costs?</span>
+                  <span class="lp-faq-icon" aria-hidden="true"></span>
+                </summary>
+                <div class="lp-faq-body">
+                  <p>The AI and infrastructure that power your OS are <strong>included in your subscription</strong>. The only thing billed separately is your own usage &mdash; SMS/MMS segments, your phone number, and email sends &mdash; and it passes through <strong>at cost, with zero markup</strong>.</p>
+                  <p>We don&rsquo;t make a dime on your usage. You text more, the carriers get paid &mdash; not us.</p>
                 </div>
               </details>
 
