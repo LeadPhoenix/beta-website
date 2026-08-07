@@ -7021,14 +7021,10 @@
             <span class="apply-err" id="applyErrLeadSource"></span>
           </div>
 
-          <!-- Q4: IMO -->
+          <!-- Q4: IMO — free text (no named organizations) -->
           <div class="apply-question">
             <div class="apply-q-label">What IMO / insurance organization are you working with?</div>
-            <div class="apply-radio-group" data-question="imo" id="applyImoGroup">
-              <label class="apply-radio"><input type="radio" name="imo" value="Symmetry Financial Group / Quility" /><span>Symmetry Financial Group / Quility</span></label>
-              <label class="apply-radio"><input type="radio" name="imo" value="Other" id="applyImoOther" /><span>Other</span></label>
-            </div>
-            <input class="apply-input apply-other-input" type="text" placeholder="Tell us which" id="applyImoOtherText" hidden />
+            <input class="apply-input" type="text" placeholder="Your IMO / organization" id="applyImo" />
             <span class="apply-err" id="applyErrImo"></span>
           </div>
 
@@ -7451,8 +7447,7 @@
       // Step 2 fields
       const otherChk     = document.getElementById('applyLeadSourceOther');
       const otherTxt     = document.getElementById('applyLeadSourceOtherText');
-      const imoGroup     = document.getElementById('applyImoGroup');
-      const imoOtherTxt  = document.getElementById('applyImoOtherText');
+      const imoEl        = document.getElementById('applyImo');
       const reasonEl     = document.getElementById('applyReason');
       const consentTrans = document.getElementById('applyConsentTransactional');
       const consentMkt   = document.getElementById('applyConsentMarketing');
@@ -7477,7 +7472,7 @@
         // Step 2 reset
         form.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(i => { i.checked = false; });
         if (otherTxt) { otherTxt.value = ''; otherTxt.hidden = true; }
-        if (imoOtherTxt) { imoOtherTxt.value = ''; imoOtherTxt.hidden = true; }
+        if (imoEl) { imoEl.value = ''; imoEl.classList.remove('error'); }
         if (reasonEl) reasonEl.value = '';
         if (company) company.value = '';
         [errProd, errVol, errSrc, errImo, errFocus, errReason, errConsentTr, errConsentMk].forEach(e => e && e.classList.remove('show'));
@@ -7534,17 +7529,6 @@
         });
       }
 
-      // ── "Other" IMO toggle ──
-      if (imoGroup && imoOtherTxt) {
-        imoGroup.addEventListener('change', (e) => {
-          if (e.target && e.target.name === 'imo') {
-            const isOther = e.target.value === 'Other' && e.target.checked;
-            imoOtherTxt.hidden = !isOther;
-            if (isOther) setTimeout(() => imoOtherTxt.focus(), 100);
-            else imoOtherTxt.value = '';
-          }
-        });
-      }
 
       // ── Validation helpers ──
       const isValidEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
@@ -7653,22 +7637,8 @@
           if (leadSources.indexOf('Other') !== -1) leadSourceOther = otherTxt.value.trim();
         }
 
-        const imoChoice = getRadioValue('imo');
-        let imoOther = '';
-        let imo = '';
-        if (!imoChoice) {
-          showErr(null, errImo, 'Please pick one.'); ok = false;
-        } else if (imoChoice === 'Other' && !imoOtherTxt.value.trim()) {
-          showErr(null, errImo, 'Please tell us which.'); ok = false;
-        } else {
-          clearErr(null, errImo);
-          if (imoChoice === 'Other') {
-            imoOther = imoOtherTxt.value.trim();
-            imo = 'Other: ' + imoOther;
-          } else {
-            imo = imoChoice;
-          }
-        }
+        const imo = imoEl.value.trim();
+        if (!imo) { showErr(imoEl, errImo, 'Please tell us your IMO.'); ok = false; } else clearErr(imoEl, errImo);
 
         const primaryFocus = getRadioValue('primaryFocus');
         if (!primaryFocus) { showErr(null, errFocus, 'Please pick one.'); ok = false; } else clearErr(null, errFocus);
@@ -7706,7 +7676,7 @@
             leadSource:      sourcesForPayload,
             leadSourceOther: leadSourceOther,
             imo:             imo,
-            imoOther:        imoOther,
+            imoOther:        '',
             primaryFocus:    primaryFocus,
             reason:          reason,
             source: 'leadphoenix-founders-beta',
